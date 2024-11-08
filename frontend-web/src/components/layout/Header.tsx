@@ -2,7 +2,7 @@ import React from "react";
 
 const Header = () => {
   return (
-    <div className="flex h-[80px] items-center max-w-[1480px] box-border px-[20px]">
+    <div className="flex h-[80px] items-center max-w-[1480px] box-border px-[20px] gap-[10px]">
       <Logo />
       <div className="flex flex-grow justify-center">
         <Search />
@@ -13,7 +13,7 @@ const Header = () => {
 };
 
 const Logo = () => {
-  return <div>NOTION LOG</div>;
+  return <div className="itim-regular text-[24px]">NOTION LOG</div>;
 };
 
 const Search = () => {
@@ -53,7 +53,11 @@ const SearchIcon = () => {
 };
 
 const LoginButton = () => {
-  return <button>Login</button>;
+  return (
+    <button className="bg-[#0066FF] text-white w-[90px] h-[40px] box-border rounded-md">
+      로그인
+    </button>
+  );
 };
 
 export default Header;
