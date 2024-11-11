@@ -3,8 +3,8 @@ import React from "react";
 
 const HomeCard = () => {
   return (
-    <div className="flex flex-col w-[340px] gap-[10px]">
-      <div className="w-full h-[160px] bg-black rounded-[16px]">
+    <div className="flex flex-col min-w-[340px] gap-[10px] w-full">
+      <div className="w-full">
         <img
           src={`${process.env.NEXT_PUBLIC_ASSET_URL}/background.png`}
           alt=""
