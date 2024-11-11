@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "react-notion-x/src/styles.css";
+import "prismjs/themes/prism-tomorrow.css";
+import "katex/dist/katex.min.css";
 import Header from "@/components/layout/Header";
 
 export const metadata: Metadata = {
@@ -15,10 +18,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header className="max-w-[1480px] mx-auto">
+        <header className="mx-auto max-w-[1480px]">
           <Header />
         </header>
-        <main className="max-w-[1480px] mx-auto">{children}</main>
+        <main className="mx-auto max-w-[1480px]">{children}</main>
       </body>
     </html>
   );

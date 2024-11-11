@@ -23,6 +23,10 @@ body {
   -webkit-box-orient: vertical;
 }
 
+div.notion-page-icon-hero.notion-page-icon-span {
+  margin-left: -333px;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
