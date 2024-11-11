@@ -1,10 +1,20 @@
 "use client";
-import { useRouter } from "next/navigation";
-import React from "react";
+import { loginGoogle, getLogginedUser } from "@/utils/supabase";
+import Link from "next/link";
+import React, { useEffect } from "react";
 
 const Header = () => {
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    const user = await getLogginedUser();
+    console.log(user);
+  };
+
   return (
-    <div className="flex h-[80px] items-center box-border px-[20px] gap-[10px]">
+    <div className="box-border flex h-[80px] items-center gap-[10px] px-[20px]">
       <Logo />
       <div className="flex flex-grow justify-center">
         <Search />
@@ -15,24 +25,20 @@ const Header = () => {
 };
 
 const Logo = () => {
-  const router = useRouter();
   return (
-    <div
-      className="itim-regular text-[24px] cursor-pointer"
-      onClick={() => router.push("/")}
-    >
+    <Link className="itim-regular cursor-pointer text-[24px]" href={"/"}>
       NOTION LOG
-    </div>
+    </Link>
   );
 };
 
 const Search = () => {
   return (
-    <div className="bg-[#F7F9FC] rounded-[20px] flex p-[12px_24px] box-border max-w-[654px] gap-[8px] w-full">
+    <div className="box-border flex w-full max-w-[654px] gap-[8px] rounded-[20px] bg-[#F7F9FC] p-[12px_24px]">
       <SearchIcon />
       <input
         type="text"
-        className="w-full bg-[#F7F9FC] border-none focus:outline-none"
+        className="w-full border-none bg-[#F7F9FC] focus:outline-none"
         placeholder="검색어를 입력해 주세요."
       />
     </div>
@@ -64,7 +70,10 @@ const SearchIcon = () => {
 
 const LoginButton = () => {
   return (
-    <button className="bg-[#0066FF] text-white w-[90px] h-[40px] box-border rounded-md">
+    <button
+      className="box-border h-[40px] w-[90px] rounded-md bg-[#0066FF] text-white"
+      onClick={loginGoogle}
+    >
       로그인
     </button>
   );
