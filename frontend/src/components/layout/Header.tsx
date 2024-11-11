@@ -1,16 +1,19 @@
 "use client";
-import { loginGoogle, getLogginedUser } from "@/utils/supabase";
+import { loginGoogle, getLogginedUser, logoutGoogle } from "@/utils/supabase";
 import Link from "next/link";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import Avartar from "../common/Avartar";
 
 const Header = () => {
+  const [user, setUser] = useState<any>();
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    const user = await getLogginedUser();
-    console.log(user);
+    const { data } = await getLogginedUser();
+    setUser(data.user);
   };
 
   return (
@@ -19,7 +22,7 @@ const Header = () => {
       <div className="flex flex-grow justify-center">
         <Search />
       </div>
-      <LoginButton />
+      {user ? <LoginnedState user={user} /> : <LoginButton />}
     </div>
   );
 };
@@ -76,6 +79,23 @@ const LoginButton = () => {
     >
       로그인
     </button>
+  );
+};
+
+const LoginnedState = ({ user }: { user: { email: string } }) => {
+  return (
+    <>
+      <div className="flex gap-[5px]">
+        <Avartar />
+        <div>{user.email.split("@")[0]}</div>
+      </div>
+      <button
+        className="box-border h-[40px] w-[90px] rounded-md bg-[#0066FF] text-white"
+        onClick={logoutGoogle}
+      >
+        로그아웃
+      </button>
+    </>
   );
 };
 

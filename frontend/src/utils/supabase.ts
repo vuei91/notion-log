@@ -16,6 +16,13 @@ export const loginGoogle = async () => {
   }
 };
 
+export const logoutGoogle = async () => {
+  const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+  alert("로그아웃");
+  location.reload();
+};
+
 // 로그인 된 유저 가져오기
 export const getLogginedUser = () => {
   return supabase.auth.getUser();
