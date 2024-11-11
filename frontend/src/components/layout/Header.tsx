@@ -1,8 +1,10 @@
+"use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const Header = () => {
   return (
-    <div className="flex h-[80px] items-center max-w-[1480px] box-border px-[20px] gap-[10px]">
+    <div className="flex h-[80px] items-center box-border px-[20px] gap-[10px]">
       <Logo />
       <div className="flex flex-grow justify-center">
         <Search />
@@ -13,7 +15,15 @@ const Header = () => {
 };
 
 const Logo = () => {
-  return <div className="itim-regular text-[24px]">NOTION LOG</div>;
+  const router = useRouter();
+  return (
+    <div
+      className="itim-regular text-[24px] cursor-pointer"
+      onClick={() => router.push("/")}
+    >
+      NOTION LOG
+    </div>
+  );
 };
 
 const Search = () => {

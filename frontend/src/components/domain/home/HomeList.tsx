@@ -1,9 +1,16 @@
 import React from "react";
+import HomeCard from "./HomeCard";
 
-type Props = {};
+const items = [1];
 
-const HomeList = (props: Props) => {
-  return <div>HomeList</div>;
+const HomeList = () => {
+  return (
+    <div>
+      {items.map((item) => (
+        <HomeCard key={item} />
+      ))}
+    </div>
+  );
 };
 
 export default HomeList;

@@ -15,10 +15,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header>
+        <header className="max-w-[1480px] mx-auto">
           <Header />
         </header>
-        {children}
+        <main className="max-w-[1480px] mx-auto">{children}</main>
       </body>
     </html>
   );
