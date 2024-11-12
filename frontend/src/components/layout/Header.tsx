@@ -1,5 +1,4 @@
 "use client";
-import { parsePageId } from "notion-utils";
 import useUser from "@/hooks/useUser";
 import { loginGoogle, logoutGoogle } from "@/utils/supabase";
 import Link from "next/link";
@@ -134,6 +133,7 @@ const LoginnedState = ({ user }: { user: GoogleUser }) => {
       alert("노션 링크가 아닙니다");
       return;
     }
+    window.location.replace("/notion/about/?id=" + link);
   };
 
   return (
