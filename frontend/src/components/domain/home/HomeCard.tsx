@@ -12,6 +12,7 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
     >
       <div className="w-full">
         <img
+          className="max-h-[160px] w-full rounded-[16px] bg-contain"
           src={
             notion.thumbnail
               ? notion.thumbnail
