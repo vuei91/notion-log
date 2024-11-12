@@ -1,3 +1,4 @@
+import { CreateNotion } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -29,4 +30,13 @@ export const logoutGoogle = async (): Promise<{
 // 로그인 된 유저 가져오기
 export const getLogginedUser = () => {
   return supabase.auth.getUser();
+};
+
+export const insertNotion = async (
+  data: CreateNotion,
+): Promise<{ isSuccess: boolean; message?: string }> => {
+  const { data: result, error } = await supabase.from("notion").insert(data);
+  console.log(result, error);
+  if (error) return { isSuccess: false, message: error.message };
+  return { isSuccess: true };
 };
