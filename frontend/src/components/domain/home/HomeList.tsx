@@ -1,14 +1,14 @@
 import React from "react";
 import HomeCard from "./HomeCard";
+import { supabase } from "@/utils/supabase";
+import { Notion } from "@/types";
+import { parsePageId } from "notion-utils";
 
-const items = [{ id: "1343ad8d063d80afa423e4b110a893e0" }];
-
-const HomeList = () => {
+const HomeList = async () => {
+  const { data: notions, error } = await supabase.from("notion").select("*");
   return (
     <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {items.map((item) => (
-        <HomeCard key={item.id} id={item.id} />
-      ))}
+      {notions?.map((notion: Notion) => <HomeCard notion={notion} />)}
     </div>
   );
 };

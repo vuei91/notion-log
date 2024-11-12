@@ -1,5 +1,3 @@
-import { UUID } from "crypto";
-
 export interface CreateNotion {
   user_id: string;
   title: string;

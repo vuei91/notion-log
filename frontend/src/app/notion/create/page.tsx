@@ -1,7 +1,7 @@
 "use client";
 import useUser from "@/hooks/useUser";
 import { CreateNotion, GoogleUser } from "@/types";
-import { getLogginedUser, insertNotion } from "@/utils/supabase";
+import { insertNotion } from "@/utils/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
