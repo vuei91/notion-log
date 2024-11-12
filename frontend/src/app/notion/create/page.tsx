@@ -4,6 +4,7 @@ import { CreateNotion, GoogleUser } from "@/types";
 import { getLogginedUser, insertNotion } from "@/utils/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
+import { ClipLoader } from "react-spinners";
 
 const Create = () => {
   const router = useRouter();
@@ -30,7 +31,11 @@ const Create = () => {
       router.push("/");
     }
   }, [user, router]);
-  return <></>;
+  return (
+    <div className="flex h-[80vh] w-full items-center justify-center">
+      <ClipLoader />
+    </div>
+  );
 };
 
 export default Create;
