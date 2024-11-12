@@ -3,11 +3,12 @@ import { parsePageId } from "notion-utils";
 import useUser from "@/hooks/useUser";
 import { loginGoogle, logoutGoogle } from "@/utils/supabase";
 import Link from "next/link";
-import Avartar from "../common/Avartar";
 import { useRouter } from "next/navigation";
+import AvartarL from "../common/AvartarL";
+import { GoogleUser } from "@/types";
 
 const Header = () => {
-  const user = useUser();
+  const user: GoogleUser | undefined = useUser();
   return (
     <div className="box-border flex h-[80px] items-center gap-[10px] px-[20px]">
       <Logo />
@@ -113,7 +114,7 @@ const GoogleIcon = () => {
   );
 };
 
-const LoginnedState = ({ user }: { user: { email: string } }) => {
+const LoginnedState = ({ user }: { user: GoogleUser }) => {
   const logout = async () => {
     const { isSuccess, message } = await logoutGoogle();
     if (isSuccess) {
@@ -137,16 +138,15 @@ const LoginnedState = ({ user }: { user: { email: string } }) => {
 
   return (
     <div className="flex items-center gap-[10px]">
-      <div className="flex gap-[5px]">
-        <Avartar />
-        <div>{user.email.split("@")[0]}</div>
-      </div>
       <button
-        className="box-border h-[40px] w-[120px] rounded-md bg-[#0066FF] text-white"
+        className="box-border h-[48px] w-[124px] rounded-md bg-[#0066FF] text-white"
         onClick={addNotionLink}
       >
-        노션 링크 등록
+        링크 등록하기
       </button>
+      <div className="flex gap-[5px]">
+        <AvartarL url={user.user_metadata.picture} />
+      </div>
     </div>
   );
 };
