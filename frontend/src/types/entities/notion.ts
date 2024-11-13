@@ -1,10 +1,11 @@
-import { GoogleUser } from "./googleUser";
+import { Profile } from "./profile";
 
 export interface Notion {
   id: number;
-  user: GoogleUser;
+  profile: Profile;
   title: string;
   description: string;
   thumbnail: string;
   url: string;
+  created_at: Date;
 }

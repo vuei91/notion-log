@@ -1,10 +1,16 @@
 import Avartar from "@/components/common/Avartar";
 import { Notion } from "@/types";
+import moment from "moment";
 import Link from "next/link";
 import { parsePageId } from "notion-utils";
 import React from "react";
+import "moment/locale/ko"; // 한국어 로케일 추가
+
+moment.locale("ko");
 
 const HomeCard = ({ notion }: { notion: Notion }) => {
+  const profileName = notion.profile.name ?? notion.profile.email.split("@")[0];
+  const date = moment(notion.created_at).format("YYYY.MM.DD(ddd)");
   return (
     <Link
       className="flex w-full min-w-[340px] flex-col gap-[10px]"
@@ -12,6 +18,8 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
     >
       <div className="w-full">
         <img
+          loading="lazy"
+          draggable={false}
           className="max-h-[160px] w-full rounded-[16px] bg-contain"
           src={
             notion.thumbnail
@@ -27,14 +35,18 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
           {notion.description}
         </h6>
       </div>
-      <div className="flex justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex gap-[5px]">
           <Avartar
-            url={`${process.env.NEXT_PUBLIC_ASSET_URL}/user_avatar.svg`}
+            url={
+              notion.profile.avatar_url
+                ? notion.profile.avatar_url
+                : `${process.env.NEXT_PUBLIC_ASSET_URL}/user_avatar.svg`
+            }
           />
-          <div>username</div>
+          <div>{profileName}</div>
         </div>
-        <div className="text-[13px] text-[#A1A9AD]">2024.11.04(월)</div>
+        <div className="text-[13px] text-[#A1A9AD]">{date}</div>
       </div>
     </Link>
   );
