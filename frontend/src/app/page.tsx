@@ -1,10 +1,9 @@
 import HomeList from "@/components/domain/home/HomeList";
 import HomeTab from "@/components/domain/home/HomeTab";
-import React from "react";
 
-const Home = () => {
+const Home = async () => {
   return (
-    <div className="flex flex-col mx-auto max-w-[1480px] box-border px-[30px]">
+    <div className="mx-auto box-border flex max-w-[1480px] flex-col px-[30px]">
       <HomeTab />
       <div className="flex-grow">
         <HomeList />

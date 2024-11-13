@@ -1,10 +1,9 @@
 "use client";
 import useUser from "@/hooks/useUser";
 import { CreateNotion, GoogleUser } from "@/types";
-import { decrypt } from "@/utils/crypto";
 import { insertNotion } from "@/utils/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
 const Create = () => {
@@ -21,30 +20,25 @@ const Create = () => {
   };
   useEffect(() => {
     try {
-      // if (!user) {
-      //   router.push("/");
-      //   return;
-      // }
-      const encData = searchParams.get("data");
-      if (!encData) {
+      if (!user && typeof user === "object") {
+        alert("로그인 후 사용해주세요");
         router.push("/");
         return;
       }
-      const data = decrypt(encData, process.env.NEXT_PUBLIC_AES_SCERET_KEY!);
-      console.log("data", data);
-      if (!data) {
+      if (!user) return;
+      const url = searchParams.get("url");
+      if (!url) {
+        alert("URL이 존재하지 않습니다");
         router.push("/");
         return;
       }
-      const result = JSON.parse(data) as CreateNotion;
-      // result.user_id = user.id;
-      console.log("result", result);
-      // insertData(result);
+      const param: CreateNotion = { url, user_id: user!.id };
+      insertData(param);
     } catch (error) {
       alert("노션 등록 실패");
       router.push("/");
     }
-  }, [user, router]);
+  }, [user]);
   return (
     <div className="flex h-[80vh] w-full items-center justify-center">
       <ClipLoader />

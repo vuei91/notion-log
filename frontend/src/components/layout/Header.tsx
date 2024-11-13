@@ -133,7 +133,7 @@ const LoginnedState = ({ user }: { user: GoogleUser }) => {
       alert("노션 링크가 아닙니다");
       return;
     }
-    window.location.replace("/notion/about/?id=" + link);
+    window.location.replace("/notion/create/?url=" + link);
   };
 
   return (

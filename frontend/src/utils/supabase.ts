@@ -35,8 +35,7 @@ export const getLogginedUser = () => {
 export const insertNotion = async (
   data: CreateNotion,
 ): Promise<{ isSuccess: boolean; message?: string }> => {
-  const { data: result, error } = await supabase.from("notion").insert(data);
-  console.log(result, error);
+  const { error } = await supabase.from("notion").insert(data);
   if (error) return { isSuccess: false, message: error.message };
   return { isSuccess: true };
 };
