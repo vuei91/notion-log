@@ -1,6 +1,7 @@
 "use client";
 import useUser from "@/hooks/useUser";
 import { CreateNotion, GoogleUser } from "@/types";
+import { decrypt } from "@/utils/crypto";
 import { insertNotion } from "@/utils/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
@@ -20,12 +21,25 @@ const Create = () => {
   };
   useEffect(() => {
     try {
-      if (!user) return;
-      const data = searchParams.get("data");
-      if (!data) return;
+      // if (!user) {
+      //   router.push("/");
+      //   return;
+      // }
+      const encData = searchParams.get("data");
+      if (!encData) {
+        router.push("/");
+        return;
+      }
+      const data = decrypt(encData, process.env.NEXT_PUBLIC_AES_SCERET_KEY!);
+      console.log("data", data);
+      if (!data) {
+        router.push("/");
+        return;
+      }
       const result = JSON.parse(data) as CreateNotion;
-      result.user_id = user.id;
-      insertData(result);
+      // result.user_id = user.id;
+      console.log("result", result);
+      // insertData(result);
     } catch (error) {
       alert("노션 등록 실패");
       router.push("/");

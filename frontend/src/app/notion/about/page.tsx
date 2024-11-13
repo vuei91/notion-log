@@ -1,3 +1,4 @@
+import { encrypt } from "@/utils/crypto";
 import { notion } from "@/utils/notion";
 import { redirect } from "next/navigation";
 import {
@@ -10,6 +11,7 @@ import {
 
 const About = async ({ searchParams }: { searchParams: { id: string } }) => {
   let redirectUrl = "/";
+
   try {
     // notion checking
     const url = searchParams.id;
@@ -32,9 +34,9 @@ const About = async ({ searchParams }: { searchParams: { id: string } }) => {
       thumbnail: images[0],
       url,
     };
-    console.log(result);
     redirectUrl =
-      "/notion/create/?data=" + encodeURIComponent(JSON.stringify(result));
+      "/notion/create/?data=" +
+      encrypt(JSON.stringify(result), process.env.NEXT_PUBLIC_AES_SCERET_KEY!);
   } catch (error) {
     console.error(error);
   }
