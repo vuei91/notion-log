@@ -8,13 +8,14 @@ import { ClipLoader } from "react-spinners";
 
 const Create = () => {
   const router = useRouter();
-  const user: GoogleUser | undefined = useUser();
   const searchParams = useSearchParams();
+  const user: GoogleUser | undefined = useUser();
+
   const insertData = async (result: CreateNotion) => {
     try {
       await insertNotion(result);
       router.push("/");
-    } catch (error) {
+    } catch (error: Error | any) {
       throw error;
     }
   };
@@ -35,6 +36,7 @@ const Create = () => {
       const param: CreateNotion = { url, user_id: user!.id };
       insertData(param);
     } catch (error) {
+      console.error(error);
       alert("노션 등록 실패");
       router.push("/");
     }

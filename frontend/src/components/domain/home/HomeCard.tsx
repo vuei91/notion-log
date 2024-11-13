@@ -6,6 +6,7 @@ import { parsePageId } from "notion-utils";
 import React from "react";
 import "moment/locale/ko"; // 한국어 로케일 추가
 import { getNotionDetail } from "@/utils/notion";
+import Image from "next/image";
 
 moment.locale("ko");
 
@@ -21,10 +22,12 @@ const HomeCard = async ({ notion }: { notion: Notion }) => {
         href={`/notion/${parsePageId(notion.url)}`}
       >
         <div className="flex max-h-[160px] w-full justify-center rounded-[16px] border-[1px] bg-[#efefef]">
-          <img
+          <Image
             loading="lazy"
             draggable={false}
             className="h-full bg-contain"
+            width={340}
+            height={160}
             src={
               notionData?.thumbnail
                 ? notionData.thumbnail
