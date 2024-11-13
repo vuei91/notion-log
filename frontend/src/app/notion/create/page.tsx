@@ -3,6 +3,7 @@ import useUser from "@/hooks/useUser";
 import { CreateNotion, GoogleUser } from "@/types";
 import { insertNotion } from "@/utils/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
+import { parsePageId } from "notion-utils";
 import { useEffect } from "react";
 import { ClipLoader } from "react-spinners";
 
@@ -30,6 +31,17 @@ const Create = () => {
       const url = searchParams.get("url");
       if (!url) {
         alert("URL이 존재하지 않습니다");
+        router.push("/");
+        return;
+      }
+      if (url.includes(".notion.site")) {
+        alert("노션 링크가 아닙니다");
+        router.push("/");
+        return;
+      }
+      const pageId = parsePageId(url);
+      if (!pageId) {
+        alert("노션 링크가 아닙니다");
         router.push("/");
         return;
       }
