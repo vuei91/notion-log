@@ -1,4 +1,5 @@
 import { NotionDetail } from "@/types";
+import { NotionDetailForES } from "@/types/entities/notionDetailForES";
 import { NotionAPI } from "notion-client";
 import {
   defaultMapImageUrl,
@@ -25,6 +26,21 @@ export const getNotionDetail = (page: any): Partial<NotionDetail> => {
     title,
     description,
     thumbnail: images[0],
+  };
+  return result;
+};
+
+export const getNotionDetailForES = (page: any): Partial<NotionDetailForES> => {
+  if (!page) return {};
+  const title = getPageTitle(page)!;
+  const description = [];
+  for (const block in page.block) {
+    const text = getTextContent(page.block[block].value?.properties?.title);
+    description.push(text);
+  }
+  const result = {
+    title,
+    description,
   };
   return result;
 };
