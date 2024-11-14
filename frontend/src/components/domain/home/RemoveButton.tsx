@@ -5,13 +5,7 @@ import { removeNotion } from "@/utils/supabase";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-const RemoveButton = ({
-  notion,
-  refresh,
-}: {
-  notion: Notion;
-  refresh: (path: string) => void;
-}) => {
+const RemoveButton = ({ notion }: { notion: Notion }) => {
   const [show, setShow] = useState(false);
   const user = useUser();
   useEffect(() => {
@@ -28,7 +22,7 @@ const RemoveButton = ({
           if (!result) return;
           const { isSuccess, message } = await removeNotion(notion.id);
           if (isSuccess) {
-            refresh("/");
+            window.location.reload();
           } else {
             console.error(message);
           }

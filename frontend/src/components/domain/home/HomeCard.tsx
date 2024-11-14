@@ -12,19 +12,16 @@ import RemoveButton from "./RemoveButton";
 
 moment.locale("ko");
 
-const HomeCard = ({
-  notion,
-  refresh,
-}: {
-  notion: Notion;
-  refresh: (path: string) => Promise<void>;
-}) => {
-  const { loading, error, notionPage } = useNotionPage({ pageUrl: notion.url });
-  if (loading || error) {
-    if (error?.message?.includes("Notion page not found")) {
+const HomeCard = ({ notion }: { notion: Notion }) => {
+  const { loading, errorMessage, notionPage } = useNotionPage({
+    pageUrl: notion.url,
+  });
+  console.log(errorMessage);
+  if (loading || errorMessage) {
+    if (errorMessage?.includes("Notion page not found")) {
       return (
         <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
-          <RemoveButton notion={notion} refresh={refresh} />
+          <RemoveButton notion={notion} />
           페이지 게시를 종료하였습니다!
         </div>
       );
@@ -35,17 +32,17 @@ const HomeCard = ({
   const notionData = getNotionDetail(notionPage);
   return (
     <Link
-      className="relative flex min-h-[300px] min-w-[340px] flex-col gap-[10px]"
+      className="relative flex max-h-[300px] min-w-[340px] flex-col gap-[10px]"
       href={`/notion/${parsePageId(notion.url)}`}
     >
-      <RemoveButton notion={notion} refresh={refresh} />
-      <div className="flex min-h-[300px] w-full justify-center rounded-[16px] border-[1px] bg-[#efefef]">
+      <RemoveButton notion={notion} />
+      <div className="flex justify-center rounded-[16px] border-[1px] bg-[#efefef]">
         <Image
           loading="lazy"
           draggable={false}
-          className="h-full bg-contain"
-          width={340}
-          height={160}
+          className="h-[160px] bg-contain"
+          width={300}
+          height={300}
           src={
             notionData?.thumbnail
               ? notionData.thumbnail

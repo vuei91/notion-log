@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 const useNotionPage = ({ pageUrl }: { pageUrl: string }) => {
   const [notionPage, setNotionPage] = useState<any>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | any>();
+  const [errorMessage, setErrorMessage] = useState<string>();
   useEffect(() => {
     setLoading(true);
     fetchData();
@@ -12,14 +12,19 @@ const useNotionPage = ({ pageUrl }: { pageUrl: string }) => {
   const fetchData = async () => {
     try {
       const { data } = await axios.get("/api/notion-page?id=" + pageUrl);
-      setNotionPage(data);
-    } catch (error) {
-      setError(error);
+      console.log("data", data);
+      if (data.error) {
+        setErrorMessage(data.error);
+        return;
+      }
+      setNotionPage(data.data);
+    } catch (error: Error | any) {
+      setErrorMessage(error?.message);
     } finally {
       setLoading(false);
     }
   };
-  return { notionPage, error, loading };
+  return { notionPage, errorMessage, loading };
 };
 
 export default useNotionPage;
