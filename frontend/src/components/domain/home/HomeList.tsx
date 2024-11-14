@@ -1,7 +1,6 @@
 import { Notion } from "@/types";
 import { supabase } from "@/utils/supabase";
 import HomeCard from "./HomeCard";
-import { revalidatePath } from "next/cache";
 
 const HomeList = async () => {
   const { data: notions, error } = await supabase

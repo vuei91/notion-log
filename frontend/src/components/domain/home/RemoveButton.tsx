@@ -3,7 +3,6 @@ import useUser from "@/hooks/useUser";
 import { Notion } from "@/types";
 import { removeNotion } from "@/utils/supabase";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const RemoveButton = ({
@@ -13,7 +12,6 @@ const RemoveButton = ({
   notion: Notion;
   refresh: (path: string) => void;
 }) => {
-  const router = useRouter();
   const [show, setShow] = useState(false);
   const user = useUser();
   useEffect(() => {
