@@ -39,3 +39,11 @@ export const insertNotion = async (
   if (error) return { isSuccess: false, message: error.message };
   return { isSuccess: true };
 };
+
+export const removeNotion = async (
+  id: number,
+): Promise<{ isSuccess: boolean; message?: string }> => {
+  const { error } = await supabase.from("notion").delete().eq("id", id);
+  if (error) return { isSuccess: false, message: error.message };
+  return { isSuccess: true };
+};

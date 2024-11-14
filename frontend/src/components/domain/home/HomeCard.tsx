@@ -7,10 +7,17 @@ import React from "react";
 import "moment/locale/ko"; // 한국어 로케일 추가
 import { getNotionDetail } from "@/utils/notion";
 import Image from "next/image";
+import RemoveButton from "./RemoveButton";
+import { revalidatePath } from "next/cache";
 
 moment.locale("ko");
 
 const HomeCard = async ({ notion }: { notion: Notion }) => {
+  const refresh = async (path: string) => {
+    "use server";
+    revalidatePath(path);
+  };
+
   try {
     const profileName =
       notion.profile.name ?? notion.profile.email.split("@")[0];
@@ -18,10 +25,11 @@ const HomeCard = async ({ notion }: { notion: Notion }) => {
     const notionData = await getNotionDetail(notion.url);
     return (
       <Link
-        className="flex w-full min-w-[340px] flex-col gap-[10px]"
+        className="relative flex h-[160px] min-w-[340px] flex-col gap-[10px]"
         href={`/notion/${parsePageId(notion.url)}`}
       >
-        <div className="flex max-h-[160px] w-full justify-center rounded-[16px] border-[1px] bg-[#efefef]">
+        <RemoveButton notion={notion} refresh={refresh} />
+        <div className="flex h-full w-full justify-center rounded-[16px] border-[1px] bg-[#efefef]">
           <Image
             loading="lazy"
             draggable={false}
@@ -62,13 +70,15 @@ const HomeCard = async ({ notion }: { notion: Notion }) => {
   } catch (error: Error | any) {
     if (error?.message?.includes("Notion page not found")) {
       return (
-        <div className="flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
+        <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
+          <RemoveButton notion={notion} refresh={refresh} />
           페이지 게시를 종료하였습니다!
         </div>
       );
     }
     return (
-      <div className="flex w-full min-w-[340px] flex-col items-center justify-center gap-[10px]">
+      <div className="relative flex w-full min-w-[340px] flex-col items-center justify-center gap-[10px]">
+        <RemoveButton notion={notion} refresh={refresh} />
         오류가 발생하였습니다!
         {error.message}
       </div>

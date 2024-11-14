@@ -8,6 +8,9 @@ const nextConfig = {
       {
         hostname: "lh3.googleusercontent.com",
       },
+      {
+        hostname: "s3.ap-northeast-2.amazonaws.com",
+      },
     ],
   },
 };

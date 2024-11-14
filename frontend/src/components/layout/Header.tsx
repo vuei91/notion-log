@@ -1,12 +1,21 @@
 "use client";
 import useUser from "@/hooks/useUser";
-import { loginGoogle, logoutGoogle } from "@/utils/supabase";
+import {
+  insertNotion,
+  loginGoogle,
+  logoutGoogle,
+  supabase,
+} from "@/utils/supabase";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AvartarL from "../common/AvartarL";
 import { GoogleUser } from "@/types";
 
-const Header = () => {
+const Header = ({
+  refreshServer,
+}: {
+  refreshServer: (path: string) => void;
+}) => {
   const user: GoogleUser | undefined = useUser();
   return (
     <div className="box-border flex h-[80px] items-center gap-[10px] px-[20px]">
@@ -14,7 +23,11 @@ const Header = () => {
       <div className="flex flex-grow justify-center">
         <Search />
       </div>
-      {user ? <LoginnedState user={user} /> : <LoginButton />}
+      {user ? (
+        <LoginnedState user={user} refreshServer={refreshServer} />
+      ) : (
+        <LoginButton />
+      )}
     </div>
   );
 };
@@ -113,7 +126,14 @@ const GoogleIcon = () => {
   );
 };
 
-const LoginnedState = ({ user }: { user: GoogleUser }) => {
+const LoginnedState = ({
+  user,
+  refreshServer,
+}: {
+  user: GoogleUser;
+  refreshServer: (path: string) => void;
+}) => {
+  const router = useRouter();
   const logout = async () => {
     const { isSuccess, message } = await logoutGoogle();
     if (isSuccess) {
@@ -129,12 +149,22 @@ const LoginnedState = ({ user }: { user: GoogleUser }) => {
     if (link === "") {
       alert("링크가 존재하지 않습니다");
       return;
-    } else if (link && link.includes(".notion.site")) {
+    } else if (link && !link.includes(".notion.site")) {
       alert("노션 링크가 아닙니다");
       return;
+    } else if (!link) return;
+    const { isSuccess, message } = await insertNotion({
+      user_id: user.id,
+      url: link,
+    });
+    if (isSuccess) {
+      alert("링크 등록 완료");
+      refreshServer("/");
+    } else {
+      alert("링크 등록 실패");
+      console.error(message);
+      router.refresh();
     }
-    if (!link) return;
-    window.location.replace("/notion/create/?url=" + link);
   };
 
   return (
