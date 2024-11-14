@@ -1,10 +1,11 @@
+import { Notion } from "@/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
 
-const useNotion = () => {
+const useNotions = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [notion, setNotion] = useState();
-  const [error, setError] = useState();
+  const [notions, setNotions] = useState<Notion[]>([]);
+  const [error, setError] = useState<Error>();
   useEffect(() => {
     setLoading(true);
     fetchData();
@@ -16,9 +17,9 @@ const useNotion = () => {
       setError(error);
       return;
     }
-    setNotion(data.data);
+    setNotions(data.data);
   };
-  return { notion, error, loading };
+  return { notions, error, loading };
 };
 
-export default useNotion;
+export default useNotions;

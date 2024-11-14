@@ -10,19 +10,8 @@ import {
 
 export const notion = new NotionAPI();
 
-export const getNotionDetail = async (
-  url: string,
-): Promise<Partial<NotionDetail> | undefined> => {
-  const pageId = parsePageId(url);
-  if (!pageId) {
-    console.error("페이지 아이디가 없습니다");
-    return;
-  }
-  const page = await notion.getPage(pageId);
-  if (!page) {
-    console.error("페이지가 없습니다");
-    return;
-  }
+export const getNotionDetail = (page: any): Partial<NotionDetail> => {
+  if (!page) return {};
   const title = getPageTitle(page)!;
   const images = getPageImageUrls(page, {
     mapImageUrl: defaultMapImageUrl as any,
@@ -37,7 +26,6 @@ export const getNotionDetail = async (
     title,
     description,
     thumbnail: images[0],
-    url,
   };
   return result;
 };
