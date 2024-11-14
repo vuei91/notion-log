@@ -1,16 +1,8 @@
 import AvartarL from "@/components/common/AvartarL";
 import { GoogleUser } from "@/types";
 import { insertNotion, logoutGoogle } from "@/utils/supabase";
-import { useRouter } from "next/navigation";
 
-const LoginedState = ({
-  user,
-  refreshServer,
-}: {
-  user: GoogleUser;
-  refreshServer: (path: string) => void;
-}) => {
-  const router = useRouter();
+const LoginedState = ({ user }: { user: GoogleUser }) => {
   const logout = async () => {
     const { isSuccess, message } = await logoutGoogle();
     if (isSuccess) {
@@ -36,11 +28,11 @@ const LoginedState = ({
     });
     if (isSuccess) {
       alert("링크 등록 완료");
-      refreshServer("/");
+      window.location.reload();
     } else {
       alert("링크 등록 실패");
       console.error(message);
-      router.refresh();
+      window.location.reload();
     }
   };
 
