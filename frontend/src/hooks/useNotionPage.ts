@@ -12,7 +12,6 @@ const useNotionPage = ({ pageUrl }: { pageUrl: string }) => {
   const fetchData = async () => {
     try {
       const { data } = await axios.get("/api/notion-page?id=" + pageUrl);
-      console.log("data", data);
       if (data.error) {
         setErrorMessage(data.error);
         return;

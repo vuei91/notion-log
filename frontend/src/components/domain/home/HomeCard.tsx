@@ -16,7 +16,6 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
   const { loading, errorMessage, notionPage } = useNotionPage({
     pageUrl: notion.url,
   });
-  console.log(errorMessage);
   if (loading || errorMessage) {
     if (errorMessage?.includes("Notion page not found")) {
       return (
