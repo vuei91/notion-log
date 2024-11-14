@@ -12,12 +12,13 @@ import { revalidatePath } from "next/cache";
 
 moment.locale("ko");
 
-const HomeCard = async ({ notion }: { notion: Notion }) => {
-  const refresh = async (path: string) => {
-    "use server";
-    revalidatePath(path);
-  };
-
+const HomeCard = async ({
+  notion,
+  refresh,
+}: {
+  notion: Notion;
+  refresh: (path: string) => Promise<void>;
+}) => {
   try {
     const profileName =
       notion.profile.name ?? notion.profile.email.split("@")[0];
