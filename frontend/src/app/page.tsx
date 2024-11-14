@@ -1,5 +1,6 @@
 import HomeList from "@/components/domain/home/HomeList";
 import HomeTab from "@/components/domain/home/HomeTab";
+import { revalidatePath } from "next/cache";
 
 const Home = async () => {
   return (
