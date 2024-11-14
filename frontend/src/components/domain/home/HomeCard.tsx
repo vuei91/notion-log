@@ -25,11 +25,11 @@ const HomeCard = async ({ notion }: { notion: Notion }) => {
     const notionData = await getNotionDetail(notion.url);
     return (
       <Link
-        className="relative flex h-[160px] min-w-[340px] flex-col gap-[10px]"
+        className="relative flex min-h-[300px] min-w-[340px] flex-col gap-[10px]"
         href={`/notion/${parsePageId(notion.url)}`}
       >
         <RemoveButton notion={notion} refresh={refresh} />
-        <div className="flex h-full w-full justify-center rounded-[16px] border-[1px] bg-[#efefef]">
+        <div className="flex min-h-[300px] w-full justify-center rounded-[16px] border-[1px] bg-[#efefef]">
           <Image
             loading="lazy"
             draggable={false}
