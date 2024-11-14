@@ -54,7 +54,7 @@ const LoginedState = ({
       </button>
       <div className="group relative flex gap-[5px]">
         <AvartarL url={user.user_metadata.picture} />
-        <div className="invisible absolute right-0 top-[50px] z-[201] box-border w-[80px] rounded-lg border-[1px] border-[#D9D9D9] bg-white p-[10px] text-center hover:visible group-hover:visible">
+        <div className="invisible absolute right-0 top-[50px] z-[201] box-border w-[80px] rounded-lg border-[1px] border-[#D9D9D9] bg-white p-[10px] text-center delay-200 hover:visible group-hover:visible">
           <button onClick={logout}>로그아웃</button>
         </div>
       </div>
