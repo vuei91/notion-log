@@ -1,11 +1,10 @@
-import { NotionDetail } from "@/types/entities/notionDetail";
+import { NotionDetail } from "@/types";
 import { NotionAPI } from "notion-client";
 import {
   defaultMapImageUrl,
   getPageImageUrls,
   getPageTitle,
   getTextContent,
-  parsePageId,
 } from "notion-utils";
 
 export const notion = new NotionAPI();

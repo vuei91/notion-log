@@ -1,4 +1,4 @@
-import { CreateNotion } from "@/types";
+import { CreateNotion, Notion, NotionPaginatedData } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -46,4 +46,17 @@ export const removeNotion = async (
   const { error } = await supabase.from("notion").delete().eq("id", id);
   if (error) return { isSuccess: false, message: error.message };
   return { isSuccess: true };
+};
+
+export const getNotions = async (
+  page: number,
+  itemsPerPage = 12,
+): Promise<NotionPaginatedData> => {
+  const { data, error } = await supabase
+    .from("notion")
+    .select("*, profile(*)")
+    .order("created_at", { ascending: false })
+    .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
+  if (error) return { error };
+  return { data };
 };

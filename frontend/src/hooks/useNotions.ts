@@ -1,8 +1,8 @@
 import { Notion } from "@/types";
-import axios from "axios";
+import { getNotions } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 
-const useNotions = ({ offset, limit }: { offset?: number; limit?: number }) => {
+const useNotions = ({ page }: { page?: number }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [notions, setNotions] = useState<Notion[]>([]);
   const [error, setError] = useState<Error>();
@@ -11,15 +11,13 @@ const useNotions = ({ offset, limit }: { offset?: number; limit?: number }) => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    const { data } = await axios.get(
-      `/api/notions?limit=${limit}&offset=${offset}`,
-    );
+    const { data, error } = await getNotions(page || 1);
     setLoading(false);
-    if (data.error) {
+    if (error) {
       setError(error);
       return;
     }
-    setNotions(data.data);
+    setNotions(data || []);
   };
   return { notions, error, loading };
 };
