@@ -91,7 +91,6 @@ export async function insertNotionData(
   client: Client,
   document: Partial<NotionDetailForES>,
 ): Promise<void> {
-  console.log("document", document);
   const indexName = process.env.NEXT_PUBLIC_ELASTICSEARCH_INDEX!;
   await client.index({
     index: indexName,
@@ -134,11 +133,9 @@ export async function searchNotionData(
     // size: 4,
     body: {
       query: {
-        bool: {
-          should: [
-            { term: { title: keyword } },
-            { term: { description: keyword } },
-          ],
+        multi_match: {
+          query: keyword,
+          fields: ["title", "description"],
         },
       },
     },
