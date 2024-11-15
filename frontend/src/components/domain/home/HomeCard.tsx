@@ -25,6 +25,7 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
         </div>
       );
     }
+    return;
   }
   const profileName = notion.profile.name ?? notion.profile.email.split("@")[0];
   const date = moment(notion.created_at).format("YYYY.MM.DD(ddd)");
