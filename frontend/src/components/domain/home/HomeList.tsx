@@ -28,7 +28,6 @@ const HomeList = () => {
     const { data: notions } = await getNotions(page + 1);
     if (notions && notions.length > 0) setPage(page + 1);
     setNotionList(notionList.concat(notions || []));
-    console.log(page);
   };
 
   if (error || loading) return;

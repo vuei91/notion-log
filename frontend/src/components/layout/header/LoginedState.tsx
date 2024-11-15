@@ -1,6 +1,7 @@
 import AvartarL from "@/components/common/AvartarL";
 import { GoogleUser } from "@/types";
 import { insertNotion, logoutGoogle } from "@/utils/supabase";
+import axios from "axios";
 
 const LoginedState = ({ user }: { user: GoogleUser }) => {
   const logout = async () => {
@@ -22,11 +23,13 @@ const LoginedState = ({ user }: { user: GoogleUser }) => {
       alert("노션 링크가 아닙니다");
       return;
     } else if (!link) return;
-    const { isSuccess, message } = await insertNotion({
+    const { isSuccess, message, id } = await insertNotion({
       user_id: user.id,
       url: link,
     });
-    if (isSuccess) {
+    if (isSuccess && id) {
+      const { data } = await axios.post("/api/es", { id: id, url: link });
+      console.log(data);
       alert("링크 등록 완료");
       window.location.reload();
     } else {

@@ -1,4 +1,4 @@
-import { CreateNotion, Notion, NotionPaginatedData } from "@/types";
+import { CreateNotion, NotionPaginatedData } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -34,10 +34,14 @@ export const getLogginedUser = () => {
 
 export const insertNotion = async (
   data: CreateNotion,
-): Promise<{ isSuccess: boolean; message?: string }> => {
-  const { error } = await supabase.from("notion").insert(data);
+): Promise<{ isSuccess: boolean; message?: string; id?: number }> => {
+  const { data: notion, error } = await supabase
+    .from("notion")
+    .insert(data)
+    .select("id")
+    .single();
   if (error) return { isSuccess: false, message: error.message };
-  return { isSuccess: true };
+  return { isSuccess: true, id: notion?.id };
 };
 
 export const removeNotion = async (

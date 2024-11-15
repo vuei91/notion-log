@@ -71,23 +71,6 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
       </div>
     </Link>
   );
-  // } catch (error: Error | any) {
-  //   if (error?.message?.includes("Notion page not found")) {
-  //     return (
-  //       <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
-  //         <RemoveButton notion={notion} refresh={refresh} />
-  //         페이지 게시를 종료하였습니다!
-  //       </div>
-  //     );
-  //   }
-  //   return (
-  //     <div className="relative flex w-full min-w-[340px] flex-col items-center justify-center gap-[10px]">
-  //       <RemoveButton notion={notion} refresh={refresh} />
-  //       오류가 발생하였습니다!
-  //       {error.message}
-  //     </div>
-  //   );
-  // }
 };
 
 export default HomeCard;
