@@ -1,6 +1,6 @@
 import AvartarL from "@/components/common/AvartarL";
 import { GoogleUser } from "@/types";
-import { insertNotion, logoutGoogle } from "@/utils/supabase";
+import { insertNotion, logoutGoogle, removeNotion } from "@/utils/supabase";
 import axios from "axios";
 
 const LoginedState = ({ user }: { user: GoogleUser }) => {
@@ -13,30 +13,63 @@ const LoginedState = ({ user }: { user: GoogleUser }) => {
       console.error(message);
     }
   };
+  const validateLink = (link: string | null) => {
+    if (!link) {
+      alert("링크가 존재하지 않습니다");
+      return false;
+    }
+    if (!link.includes(".notion.site")) {
+      alert("노션 링크가 아닙니다");
+      return false;
+    }
+    return true;
+  };
+
+  const handleElasticsearch = async (id: number, link: string) => {
+    try {
+      const { data } = await axios.post("/api/elasticsearch", {
+        id,
+        url: link,
+      });
+      if (!data.isSuccess || data.error) {
+        throw new Error(data?.error || "Elasticsearch 등록 실패");
+      }
+      return true;
+    } catch (error: Error | any) {
+      console.error("Elasticsearch 등록 실패:", error.message);
+      return false;
+    }
+  };
+
+  const rollbackNotion = async (id: number) => {
+    const { isSuccess } = await removeNotion(id);
+    if (isSuccess) {
+      alert("링크 등록 실패");
+    }
+  };
 
   const addNotionLink = async () => {
     const link = prompt("노션의 링크를 넣어주세요");
-    if (link === "") {
-      alert("링크가 존재하지 않습니다");
-      return;
-    } else if (link && !link.includes(".notion.site")) {
-      alert("노션 링크가 아닙니다");
-      return;
-    } else if (!link) return;
+    if (!validateLink(link)) return;
+
     const { isSuccess, message, id } = await insertNotion({
       user_id: user.id,
-      url: link,
+      url: link!,
     });
-    if (isSuccess && id) {
-      const { data } = await axios.post("/api/es", { id: id, url: link });
-      console.log(data);
-      alert("링크 등록 완료");
-      window.location.reload();
-    } else {
+    if (!isSuccess || !id) {
       alert("링크 등록 실패");
-      console.error(message);
-      window.location.reload();
+      console.error("Database 등록 실패:", message);
+      return window.location.reload();
     }
+
+    const isElasticsearchSuccess = await handleElasticsearch(id, link!);
+    if (!isElasticsearchSuccess) {
+      await rollbackNotion(id);
+      return window.location.reload();
+    }
+
+    alert("링크 등록 완료");
+    window.location.reload();
   };
 
   return (
