@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { getNotions, getNotionsBySearch } from "@/utils/supabase";
 import { useSearchParams } from "next/navigation";
+import { removeDuplicatesById } from "@/utils/util";
 
 const HomeList = () => {
   const searchParams = useSearchParams();
@@ -20,7 +21,10 @@ const HomeList = () => {
     const { data: newNotions } = await fetchFn({ page, keyword });
 
     if (newNotions?.length) {
-      setNotionList((prevList) => [...prevList, ...newNotions]);
+      setNotionList(
+        (prevList) =>
+          removeDuplicatesById([...prevList, ...newNotions]) as Notion[],
+      );
       setPage(page);
     }
   };
@@ -35,7 +39,10 @@ const HomeList = () => {
   }, [searchParams]);
 
   useEffect(() => {
-    if (inView) handleFetch();
+    if (inView) {
+      console.log("inView");
+      handleFetch();
+    }
   }, [inView]);
 
   if (error || loading) return null;

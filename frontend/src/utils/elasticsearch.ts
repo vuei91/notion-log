@@ -1,3 +1,4 @@
+import { DEFAULT_ITEMS_PER_PAGE } from "@/constants";
 import { NotionDetailForES } from "@/types/entities/notionDetailForES";
 import { Client } from "@elastic/elasticsearch";
 
@@ -38,6 +39,18 @@ export async function createIndex(client: Client): Promise<void> {
   }
 }
 
+export async function updateIndexSettings(client: Client): Promise<void> {
+  const indexName = process.env.NEXT_PUBLIC_ELASTICSEARCH_INDEX!;
+  const settings = getNgramAndNoriSettings(indexName);
+  const exists = await client.indices.exists({ index: indexName });
+  if (exists) {
+    await client.indices.putSettings(settings);
+    console.log(`Index '${indexName}' updated successfully.`);
+  } else {
+    console.log(`Index '${indexName}' not exists.`);
+  }
+}
+
 /**
  * Returns the index settings with n-gram and nori tokenizers.
  * @param indexName - The name of the index.
@@ -54,8 +67,8 @@ function getNgramAndNoriSettings(indexName: string) {
         filter: {
           ngram_filter: {
             type: "ngram",
-            min_gram: 1,
-            max_gram: 20,
+            min_gram: 2,
+            max_gram: 10,
           },
         },
         analyzer: {
@@ -124,13 +137,14 @@ export async function deleteNotionData(
 export async function searchNotionData(
   client: Client,
   keyword: string,
-  offset?: number,
+  page: number = 1,
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
 ): Promise<Array<ElasticsearchDocument & { total_count: number }>> {
   const indexName = process.env.NEXT_PUBLIC_ELASTICSEARCH_INDEX!;
   const response = await client.search({
     index: indexName,
-    // from: offset,
-    // size: 4,
+    from: (page - 1) * itemsPerPage + 1,
+    size: itemsPerPage,
     body: {
       query: {
         multi_match: {
@@ -138,10 +152,16 @@ export async function searchNotionData(
           fields: ["title", "description"],
         },
       },
+      highlight: {
+        fields: {
+          title: {},
+          description: {},
+        },
+      },
     },
   });
-
   return response.hits.hits.map((hit: any) => ({
     ...hit._source,
+    ...hit.highlight,
   }));
 }

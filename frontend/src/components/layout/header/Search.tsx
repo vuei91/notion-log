@@ -1,4 +1,14 @@
+import { useSearchParams } from "next/navigation";
+import { useState } from "react";
+
 const Search = () => {
+  const searchParams = useSearchParams();
+  const [keyword, setKeyword] = useState(searchParams.get("q") || "");
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === "Enter") {
+      window.location.href = `/?q=${keyword}`;
+    }
+  };
   return (
     <div className="box-border flex w-full max-w-[654px] gap-[8px] rounded-[20px] bg-[#F7F9FC] p-[12px_24px]">
       <SearchIcon />
@@ -6,6 +16,9 @@ const Search = () => {
         type="text"
         className="w-full border-none bg-[#F7F9FC] focus:outline-none"
         placeholder="검색어를 입력해 주세요."
+        value={keyword}
+        onChange={(e) => setKeyword(e.target.value)}
+        onKeyDown={handleKeyDown}
       />
     </div>
   );

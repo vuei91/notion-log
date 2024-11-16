@@ -1,3 +1,4 @@
+import { DEFAULT_ITEMS_PER_PAGE } from "@/constants";
 import { CreateNotion, NotionPaginatedData } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
@@ -53,7 +54,6 @@ export const removeNotion = async (
   return { isSuccess: true };
 };
 
-const DEFAULT_ITEMS_PER_PAGE = 12;
 export const fetchNotions = async ({
   page,
   itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
@@ -69,8 +69,9 @@ export const fetchNotions = async ({
     // Fetch notion IDs from Elasticsearch if a keyword is provided
     if (keyword) {
       const { data: esData } = await axios.get(
-        `/api/elasticsearch?keyword=${keyword}`,
+        `/api/elasticsearch?keyword=${keyword}&page=${page || 1}`,
       );
+      console.log("esData", esData);
       if (!esData.isSuccess) {
         return { error: esData.error };
       }
@@ -81,11 +82,12 @@ export const fetchNotions = async ({
     const query = supabase
       .from("notion")
       .select("*, profile(*)")
-      .order("created_at", { ascending: false })
-      .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
+      .order("created_at", { ascending: false });
 
     if (notionIds) {
       query.in("id", notionIds);
+    } else {
+      query.range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
     }
 
     const { data, error } = await query;

@@ -3,6 +3,7 @@ import {
   initClient,
   insertNotionData,
   searchNotionData,
+  updateIndexSettings,
 } from "@/utils/elasticsearch";
 import { getNotionDetailForES, notion } from "@/utils/notion";
 import { NextRequest } from "next/server";
@@ -14,8 +15,10 @@ createIndex(client).catch((error) => console.error(error));
 export async function GET(req: NextRequest) {
   try {
     const keword = req.nextUrl.searchParams.get("keyword");
+    const page = req.nextUrl.searchParams.get("page");
     if (!keword) return Response.json({ isSuccess: false });
-    const data = await searchNotionData(client, keword);
+    if (page && isNaN(Number(page))) return Response.json({ isSuccess: false });
+    const data = await searchNotionData(client, keword, Number(page));
     return Response.json({ isSuccess: true, data: data?.map((e) => e.id) });
   } catch (error: Error | any) {
     return Response.json({ isSuccess: false, error: error.message });
@@ -37,4 +40,8 @@ export async function POST(req: NextRequest) {
   } catch (error: Error | any) {
     return Response.json({ isSuccess: false, error: error.message });
   }
+}
+
+export async function PUT(req: NextRequest) {
+  updateIndexSettings(client);
 }
