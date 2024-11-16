@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     const keword = req.nextUrl.searchParams.get("keyword");
     if (!keword) return Response.json({ isSuccess: false });
     const data = await searchNotionData(client, keword);
-    return Response.json({ isSuccess: true, data });
+    return Response.json({ isSuccess: true, data: data?.map((e) => e.id) });
   } catch (error: Error | any) {
     return Response.json({ isSuccess: false, error: error.message });
   }

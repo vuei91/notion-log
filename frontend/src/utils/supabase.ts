@@ -1,5 +1,6 @@
 import { CreateNotion, NotionPaginatedData } from "@/types";
 import { createClient } from "@supabase/supabase-js";
+import axios from "axios";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY || "";
@@ -52,15 +53,70 @@ export const removeNotion = async (
   return { isSuccess: true };
 };
 
-export const getNotions = async (
-  page: number,
-  itemsPerPage = 12,
-): Promise<NotionPaginatedData> => {
-  const { data, error } = await supabase
-    .from("notion")
-    .select("*, profile(*)")
-    .order("created_at", { ascending: false })
-    .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
-  if (error) return { error };
-  return { data };
+const DEFAULT_ITEMS_PER_PAGE = 12;
+export const fetchNotions = async ({
+  page,
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
+  keyword,
+}: {
+  page: number;
+  itemsPerPage?: number;
+  keyword?: string;
+}): Promise<NotionPaginatedData> => {
+  try {
+    let notionIds: string[] | null = null;
+
+    // Fetch notion IDs from Elasticsearch if a keyword is provided
+    if (keyword) {
+      const { data: esData } = await axios.get(
+        `/api/elasticsearch?keyword=${keyword}`,
+      );
+      if (!esData.isSuccess) {
+        return { error: esData.error };
+      }
+      notionIds = esData.data;
+    }
+
+    // Build the Supabase query
+    const query = supabase
+      .from("notion")
+      .select("*, profile(*)")
+      .order("created_at", { ascending: false })
+      .range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
+
+    if (notionIds) {
+      query.in("id", notionIds);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      return { error };
+    }
+
+    return { data };
+  } catch (error: Error | any) {
+    return { error: error.message || "An unknown error occurred" };
+  }
+};
+
+export const getNotions = async ({
+  page,
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
+}: {
+  page: number;
+  itemsPerPage?: number;
+}): Promise<NotionPaginatedData> => {
+  return fetchNotions({ page, itemsPerPage });
+};
+
+export const getNotionsBySearch = async ({
+  page,
+  keyword,
+  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
+}: {
+  page: number;
+  keyword?: string;
+  itemsPerPage?: number;
+}): Promise<NotionPaginatedData> => {
+  return fetchNotions({ page, itemsPerPage, keyword });
 };

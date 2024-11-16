@@ -1,40 +1,48 @@
 "use client";
+
 import { Notion } from "@/types";
 import HomeCard from "./HomeCard";
 import useNotions from "@/hooks/useNotions";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { getNotions } from "@/utils/supabase";
+import { getNotions, getNotionsBySearch } from "@/utils/supabase";
+import { useSearchParams } from "next/navigation";
 
 const HomeList = () => {
+  const searchParams = useSearchParams();
   const [notionList, setNotionList] = useState<Notion[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const { notions, error, loading } = useNotions({ page });
+  const [page, setPage] = useState<number>(0);
   const [ref, inView] = useInView();
+  const { error, loading } = useNotions({ page });
 
-  useEffect(() => {
-    setNotionList(notions);
-  }, [notions]);
+  const fetchNotions = async (page: any, keyword?: string) => {
+    const fetchFn = keyword ? getNotionsBySearch : getNotions;
+    const { data: newNotions } = await fetchFn({ page, keyword });
 
-  useEffect(() => {
-    // inView가 true 일때만 실행한다.
-    if (inView) {
-      console.log(inView, "무한 스크롤 요청 🎃"); // 실행할 함수
-      setNotions();
+    if (newNotions?.length) {
+      setNotionList((prevList) => [...prevList, ...newNotions]);
+      setPage(page);
     }
-  }, [inView]);
-
-  const setNotions = async () => {
-    const { data: notions } = await getNotions(page + 1);
-    if (notions && notions.length > 0) setPage(page + 1);
-    setNotionList(notionList.concat(notions || []));
   };
 
-  if (error || loading) return;
+  const handleFetch = () => {
+    const keyword = searchParams.get("q");
+    fetchNotions(page + 1, keyword || undefined);
+  };
+
+  useEffect(() => {
+    handleFetch();
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (inView) handleFetch();
+  }, [inView]);
+
+  if (error || loading) return null;
 
   return (
     <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-      {notionList?.map((notion: Notion) => (
+      {notionList.map((notion) => (
         <HomeCard notion={notion} key={notion.id} />
       ))}
       <div className="h-[1px]" ref={ref}></div>

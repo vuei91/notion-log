@@ -141,10 +141,7 @@ export async function searchNotionData(
     },
   });
 
-  const total = (response.hits.total as { value: number })?.value ?? 0;
-
   return response.hits.hits.map((hit: any) => ({
     ...hit._source,
-    total_count: total,
   }));
 }
