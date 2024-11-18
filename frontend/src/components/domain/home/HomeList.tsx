@@ -42,7 +42,6 @@ const HomeList = () => {
 
   useEffect(() => {
     if (inView) {
-      console.log("inView");
       handleFetch();
     }
   }, [inView]);
