@@ -3,13 +3,15 @@
 import { Notion } from "@/types";
 import HomeCard from "./HomeCard";
 import useNotions from "@/hooks/useNotions";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { getNotions, getNotionsBySearch } from "@/utils/supabase";
 import { useSearchParams } from "next/navigation";
 import { removeDuplicatesById } from "@/utils/util";
+import useUser from "@/hooks/useUser";
 
 const HomeList = () => {
+  const user = useUser();
   const searchParams = useSearchParams();
   const [notionList, setNotionList] = useState<Notion[]>([]);
   const [page, setPage] = useState<number>(0);
@@ -50,7 +52,7 @@ const HomeList = () => {
   return (
     <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {notionList.map((notion) => (
-        <HomeCard notion={notion} key={notion.id} />
+        <HomeCard notion={notion} key={notion.id} user={user} />
       ))}
       <div className="h-[1px]" ref={ref}></div>
     </div>

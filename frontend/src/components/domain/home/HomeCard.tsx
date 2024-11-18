@@ -1,7 +1,7 @@
 "use client";
 import Avartar from "@/components/common/Avartar";
 import useNotionPage from "@/hooks/useNotionPage";
-import { Notion } from "@/types";
+import { GoogleUser, Notion } from "@/types";
 import { getNotionDetail } from "@/utils/notion";
 import moment from "moment";
 import "moment/locale/ko"; // 한국어 로케일 추가
@@ -12,7 +12,13 @@ import RemoveButton from "./RemoveButton";
 
 moment.locale("ko");
 
-const HomeCard = ({ notion }: { notion: Notion }) => {
+const HomeCard = ({
+  notion,
+  user,
+}: {
+  notion: Notion;
+  user: GoogleUser | undefined;
+}) => {
   const { loading, errorMessage, notionPage } = useNotionPage({
     pageUrl: notion.url,
   });
@@ -20,7 +26,7 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
     if (errorMessage?.includes("Notion page not found")) {
       return (
         <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
-          <RemoveButton notion={notion} />
+          <RemoveButton notion={notion} user={user} />
           페이지 게시를 종료하였습니다!
         </div>
       );
@@ -35,7 +41,7 @@ const HomeCard = ({ notion }: { notion: Notion }) => {
       className="relative flex max-h-[300px] min-w-[340px] flex-col gap-[10px]"
       href={`/notion/${parsePageId(notion.url)}`}
     >
-      <RemoveButton notion={notion} />
+      <RemoveButton notion={notion} user={user} />
       <div className="flex justify-center rounded-[16px] border-[1px] bg-[#efefef]">
         <Image
           loading="lazy"

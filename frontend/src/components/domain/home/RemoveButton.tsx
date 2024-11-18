@@ -1,13 +1,18 @@
 "use client";
 import useUser from "@/hooks/useUser";
-import { Notion } from "@/types";
+import { GoogleUser, Notion } from "@/types";
 import { removeNotion } from "@/utils/supabase";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
-const RemoveButton = ({ notion }: { notion: Notion }) => {
+const RemoveButton = ({
+  notion,
+  user,
+}: {
+  notion: Notion;
+  user: GoogleUser | undefined;
+}) => {
   const [show, setShow] = useState(false);
-  const user = useUser();
   useEffect(() => {
     setShow(user?.id === notion.profile.id);
   }, [user, notion]);
