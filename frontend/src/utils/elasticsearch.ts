@@ -60,22 +60,22 @@ function getNgramAndNoriSettings(indexName: string) {
   return {
     index: indexName,
     settings: {
-      index: {
-        max_ngram_diff: 20,
-      },
       analysis: {
-        filter: {
-          ngram_filter: {
-            type: "ngram",
-            min_gram: 2,
-            max_gram: 10,
+        analyzer: {
+          my_analyzer: {
+            tokenizer: "nori_tokenizer",
+            filter: ["lowercase", "edge_ngram_filter"],
+          },
+          standard_analyzer: {
+            tokenizer: "nori_tokenizer",
+            filter: ["lowercase"],
           },
         },
-        analyzer: {
-          ngram_analyzer: {
-            type: "custom",
-            tokenizer: "nori_tokenizer",
-            filter: ["lowercase", "ngram_filter"],
+        filter: {
+          edge_ngram_filter: {
+            type: "edge_ngram",
+            min_gram: 2,
+            max_gram: 10,
           },
         },
       },
@@ -84,11 +84,13 @@ function getNgramAndNoriSettings(indexName: string) {
       properties: {
         title: {
           type: "text",
-          analyzer: "ngram_analyzer",
+          analyzer: "my_analyzer",
+          search_analyzer: "standard_analyzer",
         },
         description: {
           type: "text",
-          analyzer: "ngram_analyzer",
+          analyzer: "my_analyzer",
+          search_analyzer: "standard_analyzer",
         },
       },
     },
@@ -150,12 +152,6 @@ export async function searchNotionData(
         multi_match: {
           query: keyword,
           fields: ["title", "description"],
-        },
-      },
-      highlight: {
-        fields: {
-          title: {},
-          description: {},
         },
       },
     },
