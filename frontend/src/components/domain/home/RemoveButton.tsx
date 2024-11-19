@@ -1,5 +1,4 @@
 "use client";
-import useUser from "@/hooks/useUser";
 import { GoogleUser, Notion } from "@/types";
 import { removeNotion } from "@/utils/supabase";
 import Image from "next/image";
