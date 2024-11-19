@@ -15,7 +15,7 @@ createIndex(client).catch((error) => console.error(error));
 export async function GET(req: NextRequest) {
   try {
     const keword = req.nextUrl.searchParams.get("keyword");
-    const page = req.nextUrl.searchParams.get("page");
+    const page = req.nextUrl.searchParams.get("page") || 1;
     if (!keword) return Response.json({ isSuccess: false });
     if (page && isNaN(Number(page))) return Response.json({ isSuccess: false });
     const data = await searchNotionData(client, keword, Number(page));

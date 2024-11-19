@@ -71,7 +71,6 @@ export const fetchNotions = async ({
       const { data: esData } = await axios.get(
         `/api/elasticsearch?keyword=${keyword}&page=${page || 1}`,
       );
-      console.log("esData", esData);
       if (!esData.isSuccess) {
         return { error: esData.error };
       }
