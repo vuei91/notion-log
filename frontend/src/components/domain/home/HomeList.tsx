@@ -3,7 +3,7 @@
 import { Notion } from "@/types";
 import HomeCard from "./HomeCard";
 import useNotions from "@/hooks/useNotions";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { getNotions, getNotionsBySearch } from "@/utils/supabase";
 import { useSearchParams } from "next/navigation";
@@ -14,7 +14,7 @@ const HomeList = () => {
   const user = useUser();
   const searchParams = useSearchParams();
   const [notionList, setNotionList] = useState<Notion[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
   const [ref, inView] = useInView();
   const { error, loading } = useNotions({ page });
 

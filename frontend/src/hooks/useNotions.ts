@@ -2,7 +2,7 @@ import { Notion } from "@/types";
 import { getNotions } from "@/utils/supabase";
 import { useEffect, useState } from "react";
 
-const useNotions = ({ page }: { page?: number }) => {
+const useNotions = ({ page }: { page: number }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [notions, setNotions] = useState<Notion[]>([]);
   const [error, setError] = useState<Error>();
@@ -11,7 +11,7 @@ const useNotions = ({ page }: { page?: number }) => {
     fetchData();
   }, []);
   const fetchData = async () => {
-    const { data, error } = await getNotions(page || 1);
+    const { data, error } = await getNotions({ page });
     setLoading(false);
     if (error) {
       setError(error);
