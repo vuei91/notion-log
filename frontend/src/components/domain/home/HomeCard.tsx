@@ -58,13 +58,26 @@ const HomeCard = ({
         />
       </div>
       <div className="flex flex-col gap-[5px]">
-        <h1 className="truncate text-[20px] font-[800]">{notionData?.title}</h1>
+        <div className="flex justify-between">
+          <h1 className="truncate text-[20px] font-[800]">
+            {notionData?.title}
+          </h1>
+          <div className="flex items-center justify-center gap-[5px]">
+            <Image
+              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/full-heart.svg`}
+              alt=""
+              width={18}
+              height={18}
+            />
+            <div className="text-[13px] text-[#888]">100</div>
+          </div>
+        </div>
         <h6 className="text-overflow text-[16px] text-[#767676]">
           {notionData?.description}
         </h6>
       </div>
       <div className="flex items-center justify-between">
-        <div className="flex gap-[5px]">
+        <div className="flex items-center gap-[5px]">
           <Avartar
             url={
               notion.profile.avatar_url
@@ -73,8 +86,11 @@ const HomeCard = ({
             }
           />
           <div>{profileName}</div>
+          <div className="text-[13px] text-[#A1A9AD]">{date}</div>
         </div>
-        <div className="text-[13px] text-[#A1A9AD]">{date}</div>
+        <div className="flex items-center text-[13px] text-[#888]">
+          조회수 1,000회
+        </div>
       </div>
     </Link>
   );
