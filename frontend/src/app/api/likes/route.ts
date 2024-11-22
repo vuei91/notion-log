@@ -4,10 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 export async function GET(req: NextRequest) {
   try {
     const notionId = req.nextUrl.searchParams.get("notion_id");
+    const userId = req.nextUrl.searchParams.get("user_id");
     const { error, count } = await supabase
       .from("likes")
       .select("*", { count: "exact" })
-      .eq("notion_id", notionId);
+      .eq("notion_id", notionId)
+      .eq("user_id", userId);
     if (error) throw error;
     return NextResponse.json({ isSuccess: true, count });
   } catch (error) {

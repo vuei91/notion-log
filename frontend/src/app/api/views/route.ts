@@ -19,12 +19,12 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     const notionId = body.notionId;
-    const uesrAgent = body.userAgent;
-    const ipAddress = body.ipAddress;
+    const userAgent = req.headers.get("user-agent");
+    const ip = req.ip || req.headers.get("x-forwarded-for") || "";
     const { error } = await supabase.from("views").insert({
       notion_id: notionId,
-      user_agent: uesrAgent,
-      ip_address: ipAddress,
+      user_agent: userAgent,
+      ip_address: ip,
     });
     if (error) throw error;
     return NextResponse.json({ isSuccess: true });

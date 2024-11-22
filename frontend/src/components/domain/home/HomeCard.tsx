@@ -6,9 +6,11 @@ import { getNotionDetail } from "@/utils/notion";
 import moment from "moment";
 import "moment/locale/ko"; // 한국어 로케일 추가
 import Image from "next/image";
-import Link from "next/link";
 import { parsePageId } from "notion-utils";
 import RemoveButton from "./RemoveButton";
+import { increamentViews } from "@/utils/views";
+import { useRouter } from "next/navigation";
+import { clickLikes, increamentLikes } from "@/utils/likes";
 
 moment.locale("ko");
 
@@ -19,6 +21,7 @@ const HomeCard = ({
   notion: Notion;
   user: GoogleUser | undefined;
 }) => {
+  const router = useRouter();
   const { loading, errorMessage, notionPage } = useNotionPage({
     pageUrl: notion.url,
   });
@@ -37,9 +40,16 @@ const HomeCard = ({
   const date = moment(notion.created_at).format("YYYY.MM.DD(ddd)");
   const notionData = getNotionDetail(notionPage);
   return (
-    <Link
+    <div
       className="relative flex max-h-[300px] min-w-[340px] flex-col gap-[10px]"
-      href={`/notion/${parsePageId(notion.url)}`}
+      onClick={async () => {
+        try {
+          await increamentViews({ notionId: notion.id });
+          router.push(`/notion/${parsePageId(notion.url)}`);
+        } catch (error) {
+          console.error(error);
+        }
+      }}
     >
       <RemoveButton notion={notion} user={user} />
       <div className="flex justify-center rounded-[16px] border-[1px] bg-[#efefef]">
@@ -62,14 +72,21 @@ const HomeCard = ({
           <h1 className="truncate text-[20px] font-[800]">
             {notionData?.title}
           </h1>
-          <div className="flex items-center justify-center gap-[5px]">
+          <div
+            className="flex items-center justify-center gap-[5px]"
+            onClick={async (e) => {
+              e.preventDefault();
+              if (!user) return;
+              await clickLikes({ notionId: notion.id, userId: user?.id });
+            }}
+          >
             <Image
-              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/full-heart.svg`}
-              alt=""
+              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/${notion.likes.some((v) => v.user_id === user?.id) ? "full" : "empty"}-heart.svg`}
+              alt="heart"
               width={18}
               height={18}
             />
-            <div className="text-[13px] text-[#888]">100</div>
+            <div className="text-[13px] text-[#888]">{notion.likes.length}</div>
           </div>
         </div>
         <h6 className="text-overflow text-[16px] text-[#767676]">
@@ -89,10 +106,10 @@ const HomeCard = ({
           <div className="text-[13px] text-[#A1A9AD]">{date}</div>
         </div>
         <div className="flex items-center text-[13px] text-[#888]">
-          조회수 1,000회
+          조회수 {notion.views.length}회
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

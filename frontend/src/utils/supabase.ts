@@ -80,7 +80,7 @@ export const fetchNotions = async ({
     // Build the Supabase query
     const query = supabase
       .from("notion")
-      .select("*, profile(*)")
+      .select("*, profile(*), views(*), likes(*)")
       .order("created_at", { ascending: false });
 
     if (notionIds) {
