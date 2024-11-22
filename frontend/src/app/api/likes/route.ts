@@ -11,7 +11,6 @@ export async function GET(req: NextRequest) {
     if (error) throw error;
     return NextResponse.json({ isSuccess: true, count });
   } catch (error) {
-    console.log(error);
     return NextResponse.json({ isSuccess: false, error: error });
   }
 }
@@ -36,7 +35,6 @@ export async function DELETE(req: NextRequest) {
     const body = await req.json();
     const userId = body.userId;
     const notionId = body.notionId;
-    console.log(userId, notionId);
     const { error } = await supabase
       .from("likes")
       .delete()
