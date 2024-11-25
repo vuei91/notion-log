@@ -1,10 +1,21 @@
+import Heart from "@/components/domain/notion/Heart";
 import Renderer from "@/components/domain/notion/Renderer";
 import { notion } from "@/utils/notion";
 
-const NotionPage = async ({ params }: { params: { id: string } }) => {
+const NotionPage = async ({
+  params,
+}: {
+  params: { notionPageId: string; notionId: string };
+}) => {
   try {
-    const notionData = await notion.getPage(params.id);
-    return <Renderer recordMap={notionData} rootPageId={params.id} />;
+    const notionData = await notion.getPage(params.notionPageId);
+    const notionId = Number(params.notionId || -1);
+    return (
+      <div>
+        <Heart notionId={notionId} />
+        <Renderer recordMap={notionData} rootPageId={params.notionPageId} />
+      </div>
+    );
   } catch (error: Error | any) {
     if (error?.message?.includes("Notion page not found")) {
       return (

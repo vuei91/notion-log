@@ -10,7 +10,6 @@ import { parsePageId } from "notion-utils";
 import RemoveButton from "./RemoveButton";
 import { increamentViews } from "@/utils/views";
 import { useRouter } from "next/navigation";
-import { clickLikes, increamentLikes } from "@/utils/likes";
 
 moment.locale("ko");
 
@@ -45,7 +44,7 @@ const HomeCard = ({
       onClick={async () => {
         try {
           await increamentViews({ notionId: notion.id });
-          router.push(`/notion/${parsePageId(notion.url)}`);
+          router.push(`/notion/${parsePageId(notion.url)}/${notion.id}`);
         } catch (error) {
           console.error(error);
         }
@@ -72,16 +71,9 @@ const HomeCard = ({
           <h1 className="truncate text-[20px] font-[800]">
             {notionData?.title}
           </h1>
-          <div
-            className="flex items-center justify-center gap-[5px]"
-            onClick={async (e) => {
-              e.preventDefault();
-              if (!user) return;
-              await clickLikes({ notionId: notion.id, userId: user?.id });
-            }}
-          >
+          <div className="flex items-center justify-center gap-[5px]">
             <Image
-              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/${notion.likes.some((v) => v.user_id === user?.id) ? "full" : "empty"}-heart.svg`}
+              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/heart-${notion.likes.some((v) => v.user_id === user?.id) ? "filled" : "empty"}.svg`}
               alt="heart"
               width={18}
               height={18}
