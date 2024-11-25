@@ -121,3 +121,9 @@ export const getNotionsBySearch = async ({
 }): Promise<NotionPaginatedData> => {
   return fetchNotions({ page, itemsPerPage, keyword });
 };
+
+export const getNotionsForRecommand = async () => {
+  supabase.from("notion").select("*, profile(*)").order("");
+};
+export const getNotionsForMe = async () => {};
+export const getNotionsForArticle = async () => {};

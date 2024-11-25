@@ -4,6 +4,8 @@ import "react-notion-x/src/styles.css";
 import "prismjs/themes/prism-tomorrow.css";
 import "katex/dist/katex.min.css";
 import Header from "@/components/layout/Header";
+import { RecoilRoot } from "recoil";
+import Provider from "@/components/common/Provider";
 
 export const metadata: Metadata = {
   title: "Notion Log",
@@ -18,10 +20,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <header className="mx-auto max-w-[1480px]">
-          <Header />
-        </header>
-        <main className="mx-auto max-w-[1480px]">{children}</main>
+        <Provider>
+          <header className="mx-auto max-w-[1480px]">
+            <Header />
+          </header>
+          <main className="mx-auto max-w-[1480px]">{children}</main>
+        </Provider>
       </body>
     </html>
   );

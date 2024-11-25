@@ -9,42 +9,45 @@ import { getNotions, getNotionsBySearch } from "@/utils/supabase";
 import { useSearchParams } from "next/navigation";
 import { removeDuplicatesById } from "@/utils/util";
 import useUser from "@/hooks/useUser";
+import { useRecoilState } from "recoil";
+import tabState from "@/atom/tabAtom";
 
 const HomeList = () => {
   const user = useUser();
   const searchParams = useSearchParams();
-  const [notionList, setNotionList] = useState<Notion[]>([]);
+  // const [notionList, setNotionList] = useState<Notion[]>([]);
+  const [tab, setTab] = useRecoilState(tabState);
   const [page, setPage] = useState<number>(1);
   const [ref, inView] = useInView();
-  const { error, loading } = useNotions({ page });
+  const { error, loading, notions: notionList } = useNotions({ page });
 
-  const fetchNotions = async (page: any, keyword?: string) => {
-    const fetchFn = keyword ? getNotionsBySearch : getNotions;
-    const { data: newNotions } = await fetchFn({ page, keyword });
+  // const fetchNotions = async (page: any, keyword?: string) => {
+  //   const fetchFn = keyword ? getNotionsBySearch : getNotions;
+  //   const { data: newNotions } = await fetchFn({ page, keyword });
 
-    if (newNotions?.length) {
-      setNotionList(
-        (prevList) =>
-          removeDuplicatesById([...prevList, ...newNotions]) as Notion[],
-      );
-      setPage(page);
-    }
-  };
+  //   if (newNotions?.length) {
+  //     setNotionList(
+  //       (prevList) =>
+  //         removeDuplicatesById([...prevList, ...newNotions]) as Notion[],
+  //     );
+  //     setPage(page);
+  //   }
+  // };
 
-  const handleFetch = () => {
-    const keyword = searchParams.get("q");
-    fetchNotions(page + 1, keyword || undefined);
-  };
+  // const handleFetch = () => {
+  //   const keyword = searchParams.get("q");
+  //   fetchNotions(page + 1, keyword || undefined);
+  // };
 
-  useEffect(() => {
-    handleFetch();
-  }, [searchParams]);
+  // useEffect(() => {
+  //   handleFetch();
+  // }, [searchParams]);
 
-  useEffect(() => {
-    if (inView) {
-      handleFetch();
-    }
-  }, [inView]);
+  // useEffect(() => {
+  //   if (inView) {
+  //     handleFetch();
+  //   }
+  // }, [inView]);
 
   if (error || loading) return null;
 
