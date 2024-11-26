@@ -58,7 +58,9 @@ const HomeList = () => {
   return (
     <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {(!notionList || notionList.length === 0) && (
-        <div>노션가 존재하지 않습니다</div>
+        <div className="flex h-[70vh] w-full items-center justify-center text-[20px]">
+          등록한 노션이 없습니다
+        </div>
       )}
       {notionList.map((notion) => (
         <HomeCard notion={notion} key={notion.id} user={user} />
