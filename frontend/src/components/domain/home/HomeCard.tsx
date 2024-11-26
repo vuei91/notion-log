@@ -73,12 +73,14 @@ const HomeCard = ({
           </h1>
           <div className="flex items-center justify-center gap-[5px]">
             <Image
-              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/heart-${notion.likes.some((v) => v.user_id === user?.id) ? "filled" : "empty"}.svg`}
+              src={`${process.env.NEXT_PUBLIC_ASSET_URL}/heart-${notion.likes?.some((v) => v.user_id === user?.id) ? "filled" : "empty"}.svg`}
               alt="heart"
               width={18}
               height={18}
             />
-            <div className="text-[13px] text-[#888]">{notion.likes.length}</div>
+            <div className="text-[13px] text-[#888]">
+              {notion.likes?.length || 0}
+            </div>
           </div>
         </div>
         <h6 className="text-overflow text-[16px] text-[#767676]">
@@ -98,7 +100,7 @@ const HomeCard = ({
           <div className="text-[13px] text-[#A1A9AD]">{date}</div>
         </div>
         <div className="flex items-center text-[13px] text-[#888]">
-          조회수 {notion.views.length}회
+          조회수 {notion.views?.length || 0}회
         </div>
       </div>
     </div>

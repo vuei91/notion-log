@@ -19,11 +19,12 @@ const HomeList = () => {
   const [tab, setTab] = useRecoilState(tabState);
   const [page, setPage] = useState<number>(1);
   const [ref, inView] = useInView();
+
   const {
     error,
     loading,
     notions: notionList,
-  } = useNotions({ page, userId: user?.id });
+  } = useNotions({ page, userId: user?.id, keyword: searchParams.get("q") });
 
   // const fetchNotions = async (page: any, keyword?: string) => {
   //   const fetchFn = keyword ? getNotionsBySearch : getNotions;

@@ -131,12 +131,12 @@ export const getNotions = async ({
   page: number;
   tab: Tab;
   userId?: string;
-  keyword?: string;
+  keyword: string | null;
 }) => {
   if (keyword) return await getNotionsForSearch({ page, keyword });
   switch (tab) {
     case Tab.RECOMMAND:
-      return await getNotionsForRecommand({ page });
+      return await getNotionsForRecommend({ page });
     case Tab.ARTICLE:
       return await getNotionsForArticle({ page });
     case Tab.MY_FEED:
@@ -150,25 +150,20 @@ export const getAllNotions = async ({ page }: { page: number }) => {
   return supabase
     .from("notion")
     .select("*, profile(*), views(*), likes(*)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(
+      (page - 1) * DEFAULT_ITEMS_PER_PAGE,
+      page * DEFAULT_ITEMS_PER_PAGE - 1,
+    );
 };
 
-export const getNotionsForRecommand = async ({ page }: { page: number }) => {
-  const { data, error } = await supabase
-    .from("notion")
-    .select("*, profile(*), views(*), likes(*)")
-    .order("created_at", { ascending: false });
-
-  if (error) return { data: [], error };
-  const result = data.map((notion) => {
-    const viewsCount = notion.views.length;
-    const likesCount = notion.likes.length;
-    if (viewsCount === 0) return { ...notion, ratio: 0 };
-    const ratio = likesCount / viewsCount;
-    return { ...notion, ratio };
-  });
-  result.sort((a, b) => b.ratio - a.ratio);
-  return { data: result, error: error };
+export const getNotionsForRecommend = async ({ page }: { page: number }) => {
+  return await supabase
+    .rpc(`get_recommended_notion`)
+    .range(
+      (page - 1) * DEFAULT_ITEMS_PER_PAGE,
+      page * DEFAULT_ITEMS_PER_PAGE - 1,
+    );
 };
 export const getNotionsForMe = async ({
   page,
@@ -183,13 +178,21 @@ export const getNotionsForMe = async ({
     .from("notion")
     .select("*, profile(*), views(*), likes(*)")
     .eq("user_id", userId)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(
+      (page - 1) * DEFAULT_ITEMS_PER_PAGE,
+      page * DEFAULT_ITEMS_PER_PAGE - 1,
+    );
 };
 export const getNotionsForArticle = async ({ page }: { page: number }) => {
   return supabase
     .from("notion")
     .select("*, profile(*), views(*), likes(*)")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(
+      (page - 1) * DEFAULT_ITEMS_PER_PAGE,
+      page * DEFAULT_ITEMS_PER_PAGE - 1,
+    );
 };
 
 export const getNotionsForSearch = async ({
@@ -213,5 +216,9 @@ export const getNotionsForSearch = async ({
     .from("notion")
     .select("*, profile(*), views(*), likes(*)")
     .in("id", notionIds)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(
+      (page - 1) * DEFAULT_ITEMS_PER_PAGE,
+      page * DEFAULT_ITEMS_PER_PAGE - 1,
+    );
 };
