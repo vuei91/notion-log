@@ -1,16 +1,15 @@
 "use client";
 
-import { Notion } from "@/types";
-import HomeCard from "./HomeCard";
 import useNotions from "@/hooks/useNotions";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
+import HomeCard from "./HomeCard";
 // import { getNotions, getNotionsBySearch } from "@/utils/supabase";
-import { useSearchParams } from "next/navigation";
-import { removeDuplicatesById } from "@/utils/util";
-import useUser from "@/hooks/useUser";
-import { useRecoilState } from "recoil";
 import tabState from "@/atom/tabAtom";
+import useUser from "@/hooks/useUser";
+import { useSearchParams } from "next/navigation";
+import { ClipLoader } from "react-spinners";
+import { useRecoilState } from "recoil";
 
 const HomeList = () => {
   const user = useUser();
@@ -26,35 +25,33 @@ const HomeList = () => {
     notions: notionList,
   } = useNotions({ page, userId: user?.id, keyword: searchParams.get("q") });
 
-  // const fetchNotions = async (page: any, keyword?: string) => {
-  //   const fetchFn = keyword ? getNotionsBySearch : getNotions;
-  //   const { data: newNotions } = await fetchFn({ page, keyword });
+  const handleFetch = () => {
+    const keyword = searchParams.get("q");
+  };
 
-  //   if (newNotions?.length) {
-  //     setNotionList(
-  //       (prevList) =>
-  //         removeDuplicatesById([...prevList, ...newNotions]) as Notion[],
-  //     );
-  //     setPage(page);
-  //   }
-  // };
+  useEffect(() => {
+    handleFetch();
+  }, [searchParams]);
 
-  // const handleFetch = () => {
-  //   const keyword = searchParams.get("q");
-  //   fetchNotions(page + 1, keyword || undefined);
-  // };
+  useEffect(() => {
+    if (inView) {
+      handleFetch();
+    }
+  }, [inView]);
 
-  // useEffect(() => {
-  //   handleFetch();
-  // }, [searchParams]);
+  if (error)
+    return (
+      <div className="flex h-[70vh] w-[85vw] items-center justify-center text-[20px]">
+        {error.message}
+      </div>
+    );
 
-  // useEffect(() => {
-  //   if (inView) {
-  //     handleFetch();
-  //   }
-  // }, [inView]);
-
-  if (error || loading) return null;
+  if (loading)
+    return (
+      <div className="flex h-[70vh] w-[85vw] items-center justify-center text-[20px]">
+        <ClipLoader />
+      </div>
+    );
 
   return (
     <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">

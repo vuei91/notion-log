@@ -20,7 +20,7 @@ const useNotions = ({
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [tab, userId]);
+  }, [tab, userId, keyword]);
   const fetchData = async () => {
     const { data, error } = await getNotions({ page, tab, userId, keyword });
     setLoading(false);
