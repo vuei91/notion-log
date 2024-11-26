@@ -5,7 +5,7 @@ import HomeCard from "./HomeCard";
 import useNotions from "@/hooks/useNotions";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
-import { getNotions, getNotionsBySearch } from "@/utils/supabase";
+// import { getNotions, getNotionsBySearch } from "@/utils/supabase";
 import { useSearchParams } from "next/navigation";
 import { removeDuplicatesById } from "@/utils/util";
 import useUser from "@/hooks/useUser";
@@ -19,7 +19,11 @@ const HomeList = () => {
   const [tab, setTab] = useRecoilState(tabState);
   const [page, setPage] = useState<number>(1);
   const [ref, inView] = useInView();
-  const { error, loading, notions: notionList } = useNotions({ page });
+  const {
+    error,
+    loading,
+    notions: notionList,
+  } = useNotions({ page, userId: user?.id });
 
   // const fetchNotions = async (page: any, keyword?: string) => {
   //   const fetchFn = keyword ? getNotionsBySearch : getNotions;
@@ -53,6 +57,9 @@ const HomeList = () => {
 
   return (
     <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {(!notionList || notionList.length === 0) && (
+        <div>노션가 존재하지 않습니다</div>
+      )}
       {notionList.map((notion) => (
         <HomeCard notion={notion} key={notion.id} user={user} />
       ))}

@@ -5,3 +5,4 @@ export * from "./entities/notionDetail.js";
 export * from "./entities/notionPaginatedData.js";
 export * from "./entities/views.js";
 export * from "./entities/likes.js";
+export * from "./entities/findNotion.js";
