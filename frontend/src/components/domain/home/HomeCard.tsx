@@ -21,23 +21,17 @@ const HomeCard = ({
   user: GoogleUser | undefined;
 }) => {
   const router = useRouter();
-  const { loading, errorMessage, notionPage } = useNotionPage({
-    pageUrl: notion.url,
-  });
-  if (loading || errorMessage) {
-    if (errorMessage?.includes("Notion page not found")) {
-      return (
-        <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
-          <RemoveButton notion={notion} user={user} />
-          페이지 게시를 종료하였습니다!
-        </div>
-      );
-    }
-    return;
+  if (notion.page.isNotFound) {
+    return (
+      <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
+        <RemoveButton notion={notion} user={user} />
+        페이지 게시를 종료하였습니다!
+      </div>
+    );
   }
   const profileName = notion.profile.name ?? notion.profile.email.split("@")[0];
   const date = moment(notion.created_at).format("YYYY.MM.DD(ddd)");
-  const notionData = getNotionDetail(notionPage);
+  const notionData = getNotionDetail(notion.page);
   return (
     <div
       className="relative flex max-h-[300px] min-w-[340px] flex-col gap-[10px]"

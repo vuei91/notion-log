@@ -1,7 +1,8 @@
 import { DEFAULT_ITEMS_PER_PAGE, Tab } from "@/constants";
-import { CreateNotion, NotionPaginatedData } from "@/types";
+import { CreateNotion } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
+import { getNotionDetail } from "./notion";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY || "";
@@ -54,74 +55,6 @@ export const removeNotion = async (
   return { isSuccess: true };
 };
 
-// export const fetchNotions = async ({
-//   page,
-//   itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
-//   keyword,
-// }: {
-//   page: number;
-//   itemsPerPage?: number;
-//   keyword?: string;
-// }): Promise<NotionPaginatedData> => {
-//   try {
-//     let notionIds: string[] | null = null;
-
-//     // Fetch notion IDs from Elasticsearch if a keyword is provided
-//     if (keyword) {
-//       const { data: esData } = await axios.get(
-//         `/api/elasticsearch?keyword=${keyword}&page=${page || 1}`,
-//       );
-//       if (!esData.isSuccess) {
-//         return { error: esData.error };
-//       }
-//       notionIds = esData.data;
-//     }
-
-//     // Build the Supabase query
-//     const query = supabase
-//       .from("notion")
-//       .select("*, profile(*), views(*), likes(*)")
-//       .order("created_at", { ascending: false });
-
-//     if (notionIds) {
-//       query.in("id", notionIds);
-//     } else {
-//       query.range((page - 1) * itemsPerPage, page * itemsPerPage - 1);
-//     }
-
-//     const { data, error } = await query;
-//     if (error) {
-//       return { error };
-//     }
-
-//     return { data };
-//   } catch (error: Error | any) {
-//     return { error: error.message || "An unknown error occurred" };
-//   }
-// };
-
-// export const getNotions = async ({
-//   page,
-//   itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
-// }: {
-//   page: number;
-//   itemsPerPage?: number;
-// }): Promise<NotionPaginatedData> => {
-//   return fetchNotions({ page, itemsPerPage });
-// };
-
-// export const getNotionsBySearch = async ({
-//   page,
-//   keyword,
-//   itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
-// }: {
-//   page: number;
-//   keyword?: string;
-//   itemsPerPage?: number;
-// }): Promise<NotionPaginatedData> => {
-//   return fetchNotions({ page, itemsPerPage, keyword });
-// };
-
 export const getNotions = async ({
   page = 1,
   tab,
@@ -133,23 +66,38 @@ export const getNotions = async ({
   userId?: string;
   keyword: string | null;
 }) => {
-  if (keyword) return await getNotionsForSearch({ page, keyword });
+  if (keyword) {
+    const { data } = await axios.get(
+      `/api/notion-data?type=search&page=${page}&keyword=${keyword}`,
+    );
+    return data;
+  }
   switch (tab) {
-    case Tab.RECOMMAND:
-      return await getNotionsForRecommend({ page });
-    case Tab.ARTICLE:
-      return await getNotionsForArticle({ page });
-    case Tab.MY_FEED:
-      return await getNotionsForMe({ page, userId });
-    default:
-      return await getAllNotions({ page });
+    case Tab.RECOMMAND: {
+      const { data } = await axios.get(
+        `/api/notion-data?type=recommend&page=${page}`,
+      );
+      return data;
+    }
+    case Tab.ARTICLE: {
+      const { data } = await axios.get(
+        `/api/notion-data?type=article&page=${page}`,
+      );
+      return data;
+    }
+    case Tab.MY_FEED: {
+      const { data } = await axios.get(
+        `/api/notion-data?type=me&userId=${userId}&page=${page}`,
+      );
+      return data;
+    }
   }
 };
 
 export const getAllNotions = async ({ page }: { page: number }) => {
   return supabase
     .from("notion")
-    .select("*, profile(*), views(*), likes(*)")
+    .select("*, profile(*), views(*), likes(*)", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(
       (page - 1) * DEFAULT_ITEMS_PER_PAGE,
@@ -159,7 +107,7 @@ export const getAllNotions = async ({ page }: { page: number }) => {
 
 export const getNotionsForRecommend = async ({ page }: { page: number }) => {
   return await supabase
-    .rpc(`get_recommended_notion`)
+    .rpc(`get_recommended_notion`, {}, { count: "exact" })
     .range(
       (page - 1) * DEFAULT_ITEMS_PER_PAGE,
       page * DEFAULT_ITEMS_PER_PAGE - 1,
@@ -173,10 +121,10 @@ export const getNotionsForMe = async ({
   userId?: string;
 }) => {
   if (!userId)
-    return { data: [], error: new Error("user가 존재하지 않습니다") };
+    return { data: [], error: new Error("user가 존재하지 않습니다"), count: 0 };
   return await supabase
     .from("notion")
-    .select("*, profile(*), views(*), likes(*)")
+    .select("*, profile(*), views(*), likes(*)", { count: "exact" })
     .eq("user_id", userId)
     .order("created_at", { ascending: false })
     .range(
@@ -185,9 +133,9 @@ export const getNotionsForMe = async ({
     );
 };
 export const getNotionsForArticle = async ({ page }: { page: number }) => {
-  return supabase
+  return await supabase
     .from("notion")
-    .select("*, profile(*), views(*), likes(*)")
+    .select("*, profile(*), views(*), likes(*)", { count: "exact" })
     .order("created_at", { ascending: false })
     .range(
       (page - 1) * DEFAULT_ITEMS_PER_PAGE,
@@ -207,14 +155,14 @@ export const getNotionsForSearch = async ({
   );
 
   if (!esData.isSuccess) {
-    return { data: [], error: esData.error };
+    return { data: [], error: esData.error, count: 0 };
   }
 
   const notionIds = esData.data;
 
   return supabase
     .from("notion")
-    .select("*, profile(*), views(*), likes(*)")
+    .select("*, profile(*), views(*), likes(*)", { count: "exact" })
     .in("id", notionIds)
     .order("created_at", { ascending: false })
     .range(
