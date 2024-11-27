@@ -139,14 +139,10 @@ export async function deleteNotionData(
 export async function searchNotionData(
   client: Client,
   keyword: string,
-  page: number = 1,
-  itemsPerPage = DEFAULT_ITEMS_PER_PAGE,
 ): Promise<Array<ElasticsearchDocument & { total_count: number }>> {
   const indexName = process.env.NEXT_PUBLIC_ELASTICSEARCH_INDEX!;
   const response = await client.search({
     index: indexName,
-    from: (page - 1) * itemsPerPage + 1,
-    size: itemsPerPage,
     body: {
       query: {
         multi_match: {

@@ -151,7 +151,7 @@ export const getNotionsForSearch = async ({
   keyword: string;
 }) => {
   const { data: esData } = await axios.get(
-    `/api/elasticsearch?keyword=${keyword}&page=${page}`,
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/elasticsearch?keyword=${keyword}&page=${page}`,
   );
 
   if (!esData.isSuccess) {
