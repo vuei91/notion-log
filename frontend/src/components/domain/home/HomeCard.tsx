@@ -1,6 +1,5 @@
 "use client";
 import Avartar from "@/components/common/Avartar";
-import useNotionPage from "@/hooks/useNotionPage";
 import { GoogleUser, Notion } from "@/types";
 import { getNotionDetail } from "@/utils/notion";
 import moment from "moment";

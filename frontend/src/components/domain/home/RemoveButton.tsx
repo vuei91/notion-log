@@ -33,8 +33,8 @@ const RemoveButton = ({
         }}
       >
         <Image
-          width={30}
-          height={30}
+          width={20}
+          height={20}
           src={`${process.env.NEXT_PUBLIC_ASSET_URL}/remove.svg`}
           alt={`remove-button`}
         />
