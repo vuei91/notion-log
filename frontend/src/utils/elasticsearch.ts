@@ -1,4 +1,3 @@
-import { DEFAULT_ITEMS_PER_PAGE } from "@/constants";
 import { NotionDetailForES } from "@/types/entities/notionDetailForES";
 import { Client } from "@elastic/elasticsearch";
 

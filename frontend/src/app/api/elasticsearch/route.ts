@@ -7,6 +7,7 @@ import {
 } from "@/utils/elasticsearch";
 import { getNotionDetailForES, notion } from "@/utils/notion";
 import { NextRequest } from "next/server";
+export const dynamic = "force-dynamic";
 
 const client = initClient();
 
@@ -40,6 +41,6 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function PUT(req: NextRequest) {
+export async function PUT() {
   updateIndexSettings(client);
 }

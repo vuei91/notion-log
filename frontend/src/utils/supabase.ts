@@ -2,7 +2,6 @@ import { DEFAULT_ITEMS_PER_PAGE, Tab } from "@/constants";
 import { CreateNotion } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 import axios from "axios";
-import { getNotionDetail } from "./notion";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_API_KEY || "";

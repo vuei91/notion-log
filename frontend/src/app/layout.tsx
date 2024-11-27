@@ -4,7 +4,6 @@ import "react-notion-x/src/styles.css";
 import "prismjs/themes/prism-tomorrow.css";
 import "katex/dist/katex.min.css";
 import Header from "@/components/layout/Header";
-import { RecoilRoot } from "recoil";
 import Provider from "@/components/common/Provider";
 
 export const metadata: Metadata = {

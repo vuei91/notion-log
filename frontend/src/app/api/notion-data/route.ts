@@ -7,6 +7,7 @@ import {
 } from "@/utils/supabase";
 import { NextRequest, NextResponse } from "next/server";
 import { ExtendedRecordMap } from "notion-types";
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
