@@ -1,17 +1,23 @@
 "use client";
-import tabState from "@/atom/tabAtom";
+import pageNumAtom from "@/atom/pageNumAtom";
+import tabAtom from "@/atom/tabAtom";
 import { Tab } from "@/constants";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 const HomeTab = () => {
-  const [selectedTab, setSelectedTab] = useRecoilState(tabState);
+  const [selectedTab, setSelectedTab] = useRecoilState(tabAtom);
+  const setPage = useSetRecoilState(pageNumAtom);
+  const handleTabChange = (tab: Tab) => {
+    setSelectedTab(tab);
+    setPage(1);
+  };
   return (
     <div className="my-[10px] flex">
       <div
         className={`box-border flex h-[48px] w-[72px] cursor-pointer flex-col items-center justify-center text-[#0066FF] ${
           selectedTab === Tab.RECOMMAND ? "text-[#0066FF]" : "text-[#767676]"
         }`}
-        onClick={() => setSelectedTab(Tab.RECOMMAND)}
+        onClick={() => handleTabChange(Tab.RECOMMAND)}
       >
         <div>추천</div>
         {selectedTab === Tab.RECOMMAND && (
@@ -22,7 +28,7 @@ const HomeTab = () => {
         className={`box-border flex h-[48px] w-[72px] cursor-pointer flex-col items-center justify-center ${
           selectedTab === Tab.ARTICLE ? "text-[#0066FF]" : "text-[#767676]"
         }`}
-        onClick={() => setSelectedTab(Tab.ARTICLE)}
+        onClick={() => handleTabChange(Tab.ARTICLE)}
       >
         <div>아티클</div>
         {selectedTab === Tab.ARTICLE && (
@@ -33,7 +39,7 @@ const HomeTab = () => {
         className={`box-border flex h-[48px] w-[72px] cursor-pointer flex-col items-center justify-center ${
           selectedTab === Tab.MY_FEED ? "text-[#0066FF]" : "text-[#767676]"
         }`}
-        onClick={() => setSelectedTab(Tab.MY_FEED)}
+        onClick={() => handleTabChange(Tab.MY_FEED)}
       >
         <div>내 피드</div>
         {selectedTab === Tab.MY_FEED && (

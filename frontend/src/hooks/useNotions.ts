@@ -1,10 +1,7 @@
-import tabState from "@/atom/tabAtom";
 import { Tab } from "@/constants";
 import { Notion } from "@/types";
 import { getNotions } from "@/utils/supabase";
-import axios from "axios";
 import { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
 
 const useNotions = ({
   page,
@@ -25,7 +22,7 @@ const useNotions = ({
   useEffect(() => {
     setLoading(true);
     fetchData();
-  }, [page, tab, userId, keyword]);
+  }, [tab, userId, keyword]);
   const fetchData = async () => {
     const { isSuccess, notions, error, count } = await getNotions({
       page,

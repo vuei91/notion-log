@@ -1,9 +1,9 @@
 import { Tab } from "@/constants";
 import { atom } from "recoil";
 
-const tabState = atom({
-  key: "tabState",
+const tabAtom = atom({
+  key: "tabAtom",
   default: Tab.RECOMMAND,
 });
 
-export default tabState;
+export default tabAtom;

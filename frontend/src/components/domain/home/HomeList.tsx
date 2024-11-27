@@ -1,6 +1,6 @@
 "use client";
 
-import tabState from "@/atom/tabAtom";
+import tabAtom from "@/atom/tabAtom";
 import useNotions from "@/hooks/useNotions";
 import useUser from "@/hooks/useUser";
 import { Notion } from "@/types";
@@ -8,33 +8,56 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { ClipLoader } from "react-spinners";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import HomeCard from "./HomeCard";
-import { DEFAULT_ITEMS_PER_PAGE } from "@/constants";
-import { removeDuplicatesById } from "@/utils/util";
 import { getNotions } from "@/utils/supabase";
+import { DEFAULT_ITEMS_PER_PAGE } from "@/constants";
+import pageNumAtom from "@/atom/pageNumAtom";
 
 const HomeList = () => {
   const user = useUser();
   const searchParams = useSearchParams();
   const [notionList, setNotionList] = useState<Notion[]>([]);
-  const [page, setPage] = useState<number>(1);
-  const tab = useRecoilValue(tabState);
+  const tab = useRecoilValue(tabAtom);
+  const [page, setPage] = useRecoilState(pageNumAtom);
+  const [innerLoading, setInnerLoading] = useState<boolean>(false);
   const { error, loading, notions, count } = useNotions({
     page,
     tab,
     userId: user?.id,
     keyword: searchParams.get("q"),
   });
+  const [ref, inView] = useInView();
 
   useEffect(() => {
-    setNotionList(notions);
-  }, [notions]);
+    if (page === 1) setNotionList(notions);
+  }, [notions, page]);
 
-  const click = () => {
-    if (count <= notionList.length) return;
+  const infinityAction = async () => {
+    if (page * DEFAULT_ITEMS_PER_PAGE >= count) return;
+    setInnerLoading(true);
+    const { notions } = await getNotions({
+      page: page + 1,
+      tab,
+      userId: user?.id,
+      keyword: searchParams.get("q"),
+    });
+    setInnerLoading(false);
+    setNotionList((prev) => {
+      const existingIds = new Set(prev.map((item) => item.id));
+      const newNotions = notions.filter(
+        (item: Notion) => !existingIds.has(item.id),
+      );
+      return [...prev, ...newNotions];
+    });
     setPage((prevPage) => prevPage + 1);
   };
+
+  useEffect(() => {
+    if (inView && !innerLoading) {
+      infinityAction();
+    }
+  }, [inView]);
 
   if (error)
     return (
@@ -52,8 +75,6 @@ const HomeList = () => {
 
   return (
     <>
-      <div>{page}</div>
-      <button onClick={click}>+</button>
       <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {(!notionList || notionList.length === 0) && (
           <div className="flex h-[70vh] w-[85vw] items-center justify-center text-[20px]">
@@ -64,6 +85,12 @@ const HomeList = () => {
           <HomeCard notion={notion} key={notion.id} user={user} />
         ))}
       </div>
+      {innerLoading && (
+        <div className="flex h-[10vh] w-[85vw] items-center justify-center">
+          <ClipLoader />
+        </div>
+      )}
+      {!loading && <div ref={ref} className="h-[1px]"></div>}
     </>
   );
 };
