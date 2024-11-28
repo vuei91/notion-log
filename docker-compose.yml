@@ -21,8 +21,6 @@ services:
       - .env
     environment:
       - discovery.type=single-node
-      - ELASTIC_USERNAME=${NEXT_PUBLIC_ELASTICSEARCH_USERNAME}
-      - ELASTIC_PASSWORD=${NEXT_PUBLIC_ELASTICSEARCH_PASSWORD}
       - xpack.security.enabled=false
     ports:
       - "9200:9200"

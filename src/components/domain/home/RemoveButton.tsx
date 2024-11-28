@@ -26,12 +26,19 @@ const RemoveButton = ({
         className="absolute right-3 top-3 cursor-pointer opacity-70 hover:opacity-100"
         onClick={async (e: React.MouseEvent) => {
           e.preventDefault();
+          e.stopPropagation();
           const result = confirm("등록된 링크를 삭제하시겠습니까?");
           if (!result) return;
-          const { isSuccess, message } = await removeNotion(notion.id);
+          if (!user?.id) return;
+          const { isSuccess, message } = await removeNotion({
+            id: notion.id,
+            userId: user?.id,
+          });
+
           if (isSuccess) {
-            window.location.reload();
+            window.location.replace("/");
           } else {
+            window.location.reload();
             console.error(message);
           }
         }}

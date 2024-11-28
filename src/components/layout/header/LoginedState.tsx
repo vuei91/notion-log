@@ -42,7 +42,7 @@ const LoginedState = ({ user }: { user: GoogleUser }) => {
   };
 
   const rollbackNotion = async (id: number) => {
-    const { isSuccess } = await removeNotion(id);
+    const { isSuccess } = await removeNotion({ id, userId: user.id });
     if (isSuccess) {
       alert("링크 등록 실패");
     }
