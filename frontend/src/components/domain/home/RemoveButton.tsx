@@ -1,8 +1,11 @@
 "use client";
+import tabAtom from "@/atom/tabAtom";
+import { Tab } from "@/constants";
 import { GoogleUser, Notion } from "@/types";
 import { removeNotion } from "@/utils/supabase";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { useRecoilValue } from "recoil";
 
 const RemoveButton = ({
   notion,
@@ -12,8 +15,9 @@ const RemoveButton = ({
   user: GoogleUser | undefined;
 }) => {
   const [show, setShow] = useState(false);
+  const tab = useRecoilValue(tabAtom);
   useEffect(() => {
-    setShow(user?.id === notion.profile.id);
+    setShow(user?.id === notion.profile.id && tab === Tab.MY_FEED);
   }, [user, notion]);
   return (
     show && (
