@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" # 호스트 3000번 포트를 컨테이너 3000번 포트로 매핑
+    restart: unless-stopped
+    depends_on:
+      - elasticsearch
+    networks:
+      - elastic
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.7.0
+    container_name: elasticsearch
+    env_file:
+      - .env
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_USERNAME=${NEXT_PUBLIC_ELASTICSEARCH_USERNAME}
+      - ELASTIC_PASSWORD=${NEXT_PUBLIC_ELASTICSEARCH_PASSWORD}
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    command: >
+      sh -c '
+      if ! bin/elasticsearch-plugin list | grep -q "analysis-nori"; then
+        bin/elasticsearch-plugin install analysis-nori;
+      fi &&
+      bin/elasticsearch
+      '
+    networks:
+      - elastic
+
+volumes:
+  es_data:
+    driver: local
+
+networks:
+  elastic:
+    driver: bridge

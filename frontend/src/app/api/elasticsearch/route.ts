@@ -3,15 +3,12 @@ import {
   initClient,
   insertNotionData,
   searchNotionData,
-  updateIndexSettings,
 } from "@/utils/elasticsearch";
 import { getNotionDetailForES, notion } from "@/utils/notion";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 export const dynamic = "force-dynamic";
 
 const client = initClient();
-
-createIndex(client).catch((error) => console.error(error));
 
 export async function GET(req: NextRequest) {
   try {
@@ -42,5 +39,12 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT() {
-  updateIndexSettings(client);
+  try {
+    await createIndex(client);
+    return NextResponse.json({ isSuccess: true });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json({ isSuccess: false, error: error });
+  }
+  // updateIndexSettings(client);
 }
