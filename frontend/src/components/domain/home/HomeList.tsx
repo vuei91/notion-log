@@ -30,8 +30,8 @@ const HomeList = () => {
   const [ref, inView] = useInView();
 
   useEffect(() => {
-    if (page === 1) setNotionList(notions);
-  }, [notions, page]);
+    setNotionList(notions);
+  }, [notions]);
 
   const infinityAction = async () => {
     if (page * DEFAULT_ITEMS_PER_PAGE >= count) return;

@@ -9,6 +9,8 @@ import { parsePageId } from "notion-utils";
 import RemoveButton from "./RemoveButton";
 import { increamentViews } from "@/utils/views";
 import { useRouter } from "next/navigation";
+import { useSetRecoilState } from "recoil";
+import pageNumAtom from "@/atom/pageNumAtom";
 
 moment.locale("ko");
 
@@ -20,6 +22,7 @@ const HomeCard = ({
   user: GoogleUser | undefined;
 }) => {
   const router = useRouter();
+  const setPage = useSetRecoilState(pageNumAtom);
   if (notion.page.isNotFound) {
     return (
       <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
@@ -40,6 +43,8 @@ const HomeCard = ({
           router.push(`/notion/${parsePageId(notion.url)}/${notion.id}`);
         } catch (error) {
           console.error(error);
+        } finally {
+          setPage(1);
         }
       }}
     >
