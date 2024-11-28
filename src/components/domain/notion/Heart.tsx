@@ -20,7 +20,10 @@ const Heart = ({ notionId }: { notionId: number }) => {
       className="fixed bottom-[30px] right-[50px] z-[201]"
       onClick={async (e) => {
         e.preventDefault();
-        if (!user) return;
+        if (!user) {
+          alert("로그인 후 이용해주세요");
+          return;
+        }
         await clickLikes({ notionId, userId: user?.id });
         setAction(!action);
       }}
