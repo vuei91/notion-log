@@ -2,7 +2,7 @@
 import useUser from "@/hooks/useUser";
 import { clickLikes, getCountLikes } from "@/utils/likes";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
+import React, { MouseEventHandler, useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 
 const Heart = ({ notionId }: { notionId: number }) => {
@@ -17,20 +17,20 @@ const Heart = ({ notionId }: { notionId: number }) => {
       else setIsLike(false);
     });
   }, [user, action]);
+  const handleLikeClick = async () => {
+    if (!user) {
+      alert("로그인 후 이용해주세요");
+      return;
+    }
+    setShowLoading(true);
+    await clickLikes({ notionId, userId: user?.id });
+    setShowLoading(false);
+    setAction(!action);
+  };
   return (
     <div
       className="fixed bottom-[30px] right-[50px] z-[201]"
-      onClick={async (e) => {
-        e.preventDefault();
-        if (!user) {
-          alert("로그인 후 이용해주세요");
-          return;
-        }
-        setShowLoading(true);
-        await clickLikes({ notionId, userId: user?.id });
-        setShowLoading(false);
-        setAction(!action);
-      }}
+      onClick={!showLoading ? handleLikeClick : undefined}
     >
       <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full border-[1px] border-solid border-[#32d2b2] bg-[#fff] p-1 shadow-lg">
         {!showLoading && (
