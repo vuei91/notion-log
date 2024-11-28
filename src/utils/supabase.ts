@@ -93,6 +93,7 @@ export const getNotions = async ({
       return data;
     }
     case Tab.MY_FEED: {
+      if (!userId) return { isSuccess: true, notions: [], count: 0 };
       const { data } = await axios.get(
         `/api/notion-data?type=me&userId=${userId}&page=${page}`,
       );
