@@ -88,7 +88,7 @@ const HomeList = () => {
         ))}
       </div>
       {innerLoading && (
-        <div className="flex h-[10vh] w-[85vw] items-center justify-center">
+        <div className="flex h-[10vh] w-full items-center justify-center">
           <ClipLoader />
         </div>
       )}
