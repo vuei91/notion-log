@@ -10,7 +10,7 @@ import { Suspense } from "react";
 const Header = () => {
   const user: GoogleUser | undefined = useUser();
   return (
-    <div className="box-border flex h-[80px] items-center gap-[10px] px-[20px]">
+    <div className="box-border flex h-[80px] items-center gap-[10px] px-[30px]">
       <Logo />
       <div className="flex flex-grow justify-center">
         <Suspense>
