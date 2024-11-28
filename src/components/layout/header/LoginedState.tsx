@@ -1,9 +1,12 @@
+import loadingAtom from "@/atom/loadingAtom";
 import AvartarL from "@/components/common/AvartarL";
 import { GoogleUser } from "@/types";
 import { insertNotion, logoutGoogle, removeNotion } from "@/utils/supabase";
 import axios from "axios";
+import { useSetRecoilState } from "recoil";
 
 const LoginedState = ({ user }: { user: GoogleUser }) => {
+  const setShowLoading = useSetRecoilState(loadingAtom);
   const logout = async () => {
     const { isSuccess, message } = await logoutGoogle();
     if (isSuccess) {
@@ -14,6 +17,7 @@ const LoginedState = ({ user }: { user: GoogleUser }) => {
     }
   };
   const validateLink = (link: string | null) => {
+    if (!link && typeof link !== "string") return false;
     if (!link) {
       alert("링크가 존재하지 않습니다");
       return false;
@@ -51,6 +55,8 @@ const LoginedState = ({ user }: { user: GoogleUser }) => {
   const addNotionLink = async () => {
     const link = prompt("노션의 링크를 넣어주세요");
     if (!validateLink(link)) return;
+
+    setShowLoading(true);
 
     const { isSuccess, message, id } = await insertNotion({
       user_id: user.id,

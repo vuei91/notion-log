@@ -11,6 +11,7 @@ import { increamentViews } from "@/utils/views";
 import { useRouter } from "next/navigation";
 import { useSetRecoilState } from "recoil";
 import pageNumAtom from "@/atom/pageNumAtom";
+import loadingAtom from "@/atom/loadingAtom";
 
 moment.locale("ko");
 
@@ -23,6 +24,7 @@ const HomeCard = ({
 }) => {
   const router = useRouter();
   const setPage = useSetRecoilState(pageNumAtom);
+  const setShowLoading = useSetRecoilState(loadingAtom);
   if (notion.page.isNotFound) {
     return (
       <div className="relative flex h-[282px] w-full min-w-[340px] flex-col items-center justify-center gap-[10px] rounded-[16px] border-[1px] bg-[#efefef]">
@@ -39,11 +41,14 @@ const HomeCard = ({
       className="relative flex max-h-[300px] min-w-[340px] flex-col gap-[10px]"
       onClick={async () => {
         try {
+          setShowLoading(true);
           await increamentViews({ notionId: notion.id });
-          router.push(`/notion/${parsePageId(notion.url)}/${notion.id}`);
+          window.location.href = `/notion/${parsePageId(notion.url)}/${notion.id}`;
         } catch (error) {
           console.error(error);
+          window.location.reload();
         } finally {
+          setShowLoading(false);
           setPage(1);
         }
       }}

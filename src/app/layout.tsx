@@ -5,6 +5,7 @@ import "prismjs/themes/prism-tomorrow.css";
 import "katex/dist/katex.min.css";
 import Header from "@/components/layout/Header";
 import Provider from "@/components/common/Provider";
+import Loading from "@/components/common/Loading";
 
 export const metadata: Metadata = {
   title: "Notion Log",
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Provider>
+          <Loading />
           <header className="mx-auto max-w-[1480px]">
             <Header />
           </header>

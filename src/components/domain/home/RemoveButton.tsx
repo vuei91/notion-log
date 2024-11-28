@@ -1,11 +1,12 @@
 "use client";
+import loadingAtom from "@/atom/loadingAtom";
 import tabAtom from "@/atom/tabAtom";
 import { Tab } from "@/constants";
 import { GoogleUser, Notion } from "@/types";
 import { removeNotion } from "@/utils/supabase";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 
 const RemoveButton = ({
   notion,
@@ -16,6 +17,7 @@ const RemoveButton = ({
 }) => {
   const [show, setShow] = useState(false);
   const tab = useRecoilValue(tabAtom);
+  const setShowLoading = useSetRecoilState(loadingAtom);
   useEffect(() => {
     setShow(user?.id === notion.profile.id && tab === Tab.MY_FEED);
   }, [user, notion]);
@@ -30,13 +32,14 @@ const RemoveButton = ({
           const result = confirm("등록된 링크를 삭제하시겠습니까?");
           if (!result) return;
           if (!user?.id) return;
+          setShowLoading(true);
           const { isSuccess, message } = await removeNotion({
             id: notion.id,
             userId: user?.id,
           });
 
           if (isSuccess) {
-            window.location.replace("/");
+            window.location.reload();
           } else {
             window.location.reload();
             console.error(message);
