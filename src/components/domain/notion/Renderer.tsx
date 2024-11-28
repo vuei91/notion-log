@@ -33,8 +33,9 @@ const Modal = dynamic(
 interface RendererProps {
   recordMap: ExtendedRecordMap;
   rootPageId: string;
+  notionId: number;
 }
-const Renderer = ({ recordMap, rootPageId }: RendererProps) => {
+const Renderer = ({ recordMap, rootPageId, notionId }: RendererProps) => {
   return (
     <NotionRenderer
       recordMap={recordMap}
@@ -54,7 +55,10 @@ const Renderer = ({ recordMap, rootPageId }: RendererProps) => {
           className: string;
         }) => {
           return (
-            <Link href={`/notion/${e.href}`} className={e.className}>
+            <Link
+              href={`/notion/${e.href}/${notionId}`}
+              className={e.className}
+            >
               {e.children}
             </Link>
           );

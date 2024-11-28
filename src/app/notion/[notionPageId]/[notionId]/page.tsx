@@ -13,7 +13,11 @@ const NotionPage = async ({
     return (
       <div>
         <Heart notionId={notionId} />
-        <Renderer recordMap={notionData} rootPageId={params.notionPageId} />
+        <Renderer
+          recordMap={notionData}
+          rootPageId={params.notionPageId}
+          notionId={notionId}
+        />
       </div>
     );
   } catch (error: Error | any) {
