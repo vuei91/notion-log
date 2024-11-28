@@ -2,7 +2,7 @@
 import useUser from "@/hooks/useUser";
 import { clickLikes, getCountLikes } from "@/utils/likes";
 import Image from "next/image";
-import React, { MouseEventHandler, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 
 const Heart = ({ notionId }: { notionId: number }) => {
