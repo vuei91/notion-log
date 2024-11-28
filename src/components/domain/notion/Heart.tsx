@@ -3,11 +3,13 @@ import useUser from "@/hooks/useUser";
 import { clickLikes, getCountLikes } from "@/utils/likes";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import { ClipLoader } from "react-spinners";
 
 const Heart = ({ notionId }: { notionId: number }) => {
   const user = useUser();
   const [isLike, setIsLike] = useState<boolean>(false);
   const [action, setAction] = useState<boolean>(false);
+  const [showLoading, setShowLoading] = useState<boolean>(false);
   useEffect(() => {
     if (!user) return;
     getCountLikes({ notionId, userId: user?.id }).then((data) => {
@@ -24,17 +26,22 @@ const Heart = ({ notionId }: { notionId: number }) => {
           alert("로그인 후 이용해주세요");
           return;
         }
+        setShowLoading(true);
         await clickLikes({ notionId, userId: user?.id });
+        setShowLoading(false);
         setAction(!action);
       }}
     >
       <div className="flex h-[50px] w-[50px] items-center justify-center rounded-full border-[1px] border-solid border-[#32d2b2] bg-[#fff] p-1 shadow-lg">
-        <Image
-          src={`${process.env.NEXT_PUBLIC_ASSET_URL}/heart-${isLike ? "filled" : "empty"}.svg`}
-          alt="heart"
-          width={30}
-          height={30}
-        />
+        {!showLoading && (
+          <Image
+            src={`${process.env.NEXT_PUBLIC_ASSET_URL}/heart-${isLike ? "filled" : "empty"}.svg`}
+            alt="heart"
+            width={30}
+            height={30}
+          />
+        )}
+        {showLoading && <ClipLoader color="#32d2b2" size={20} />}
       </div>
     </div>
   );
